@@ -1,0 +1,24 @@
+name: Sync Trainer Knowledge to Notion
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r notion_sync/requirements.txt
+
+      - name: Sync to Notion
+        working-directory: notion_sync
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_PARENT_PAGE_ID: ${{ secrets.NOTION_PAGE_ID }}
+        run: python sync_to_notion.py
