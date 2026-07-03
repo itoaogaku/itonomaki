@@ -1,6 +1,6 @@
 name: Sync Trainer Knowledge to Notion
 
-on:
+"on":
   workflow_dispatch: {}
 
 jobs:
