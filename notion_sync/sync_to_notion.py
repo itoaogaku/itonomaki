@@ -35,14 +35,25 @@ def _headers():
 
 def notion_request(method, path, **kwargs):
     url = f"{API_BASE}{path}"
-    for attempt in range(5):
-        resp = requests.request(method, url, headers=_headers(), timeout=30, **kwargs)
+    for attempt in range(8):
+        try:
+            resp = requests.request(method, url, headers=_headers(), timeout=60, **kwargs)
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+            wait = min(2 ** attempt, 30)
+            print(f"  (network error on {method} {path}: {exc}; retrying in {wait}s)")
+            time.sleep(wait)
+            continue
         if resp.status_code == 429:
             time.sleep(int(resp.headers.get("Retry-After", "1")))
             continue
+        if resp.status_code >= 500:
+            wait = min(2 ** attempt, 30)
+            print(f"  (server error {resp.status_code} on {method} {path}; retrying in {wait}s)")
+            time.sleep(wait)
+            continue
         if resp.status_code >= 400:
             raise RuntimeError(f"Notion API error {resp.status_code} on {method} {path}: {resp.text}")
-        return resp.json()
+        return resp.json() if resp.text else {}
     raise RuntimeError(f"Too many retries for {method} {path}")
 
 
