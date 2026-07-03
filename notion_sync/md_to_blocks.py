@@ -83,7 +83,14 @@ def markdown_to_blocks(md_text):
             blocks.append({"object": "block", "type": "divider", "divider": {}})
         elif stripped.startswith(">"):
             content = stripped.lstrip(">").strip()
-            icon = "⚠️" if content.startswith("⚠️") else "💡"
+            if content.startswith("⚠️"):
+                icon = "⚠️"
+                content = content[len("⚠️"):].strip()
+            elif content.startswith("💡"):
+                icon = "💡"
+                content = content[len("💡"):].strip()
+            else:
+                icon = "💡"
             blocks.append({
                 "object": "block",
                 "type": "callout",
@@ -109,7 +116,8 @@ def markdown_to_blocks(md_text):
             blocks.append({
                 "object": "block",
                 "type": "callout",
-                "callout": {"rich_text": parse_inline(stripped), "icon": {"type": "emoji", "emoji": "⚠️"}},
+                "callout": {"rich_text": parse_inline(stripped[len('⚠️'):].strip()),
+                            "icon": {"type": "emoji", "emoji": "⚠️"}},
             })
         else:
             blocks.append({"object": "block", "type": "paragraph",
