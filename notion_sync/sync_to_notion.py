@@ -9,6 +9,7 @@ Required environment variables:
   NOTION_TOKEN            Notion internal integration secret
   NOTION_PARENT_PAGE_ID   Page ID that the integration has been shared with
 """
+import hashlib
 import os
 import sys
 import time
@@ -21,6 +22,7 @@ from md_to_blocks import markdown_to_blocks
 NOTION_VERSION = "2022-06-28"
 API_BASE = "https://api.notion.com/v1"
 CONTENT_DIR = Path(__file__).parent / "content"
+HASH_PREFIX = "sync-hash:"
 
 
 def _headers():
@@ -84,13 +86,46 @@ def append_blocks(block_id, blocks):
         notion_request("PATCH", f"/blocks/{block_id}/children", json={"children": blocks[i:i + 100]})
 
 
-def ensure_page(parent_id, title, replace_content=False):
+def ensure_page(parent_id, title):
     page_id = find_child_page(parent_id, title)
     if page_id is None:
         return create_page(parent_id, title), True
-    if replace_content:
-        clear_children(page_id)
     return page_id, False
+
+
+def content_hash(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+
+
+def existing_hash(page_id):
+    """Read the sync-hash marker left on a page by a previous run, if any."""
+    children = get_children(page_id)
+    if not children:
+        return None
+    last = children[-1]
+    if last["type"] != "paragraph":
+        return None
+    texts = last["paragraph"].get("rich_text", [])
+    if not texts:
+        return None
+    content = texts[0].get("plain_text", texts[0].get("text", {}).get("content", ""))
+    if content.startswith(HASH_PREFIX):
+        return content[len(HASH_PREFIX):].strip()
+    return None
+
+
+def hash_marker_block(hash_value):
+    return {
+        "object": "block",
+        "type": "paragraph",
+        "paragraph": {
+            "rich_text": [{
+                "type": "text",
+                "text": {"content": f"{HASH_PREFIX} {hash_value}"},
+                "annotations": {"color": "gray"},
+            }]
+        },
+    }
 
 
 def main():
@@ -107,8 +142,18 @@ def main():
 
         for md_file in sorted(section_dir.glob("*.md")):
             title = md_file.stem
-            blocks = markdown_to_blocks(md_file.read_text(encoding="utf-8"))
-            topic_page_id, created = ensure_page(section_page_id, title, replace_content=True)
+            text = md_file.read_text(encoding="utf-8")
+            new_hash = content_hash(text)
+            topic_page_id, created = ensure_page(section_page_id, title)
+
+            if not created and existing_hash(topic_page_id) == new_hash:
+                print(f"  [topic] {title} -> {topic_page_id} (unchanged, skipped)")
+                continue
+
+            if not created:
+                clear_children(topic_page_id)
+            blocks = markdown_to_blocks(text)
+            blocks.append(hash_marker_block(new_hash))
             append_blocks(topic_page_id, blocks)
             print(f"  [topic] {title} -> {topic_page_id} "
                   f"({'created' if created else 'updated'}, {len(blocks)} blocks)")
