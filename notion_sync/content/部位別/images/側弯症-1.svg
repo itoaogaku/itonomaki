@@ -1,35 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
-  <rect width="480" height="400" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skin5" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
   <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">脊椎を背中から見た模式図(正常 / 側弯)</text>
 
   <!-- panel 1: normal -->
   <g>
-    <text x="80" y="58" text-anchor="middle" font-size="14" fill="#8a8578">正常</text>
-    <line x1="40" y1="70" x2="120" y2="70" stroke="#c9c4b4" stroke-width="2"/>
-    <line x1="40" y1="330" x2="120" y2="330" stroke="#c9c4b4" stroke-width="2"/>
-    <path d="M80,70 L80,330" stroke="#2f7f6f" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <text x="80" y="55" text-anchor="middle" font-size="13" fill="#8a8578">正常</text>
+    <path d="M45,65 C40,80 38,100 45,115 C38,160 38,260 50,330 C55,345 65,352 80,352 C95,352 105,345 110,330 C122,260 122,160 115,115 C122,100 120,80 115,65 C100,58 60,58 45,65 Z"
+          fill="url(#skin5)" stroke="#d8c3a5" stroke-width="2"/>
+    <line x1="42" y1="72" x2="118" y2="72" stroke="#c9c4b4" stroke-width="2"/>
+    <line x1="55" y1="335" x2="105" y2="335" stroke="#c9c4b4" stroke-width="2"/>
+    <path d="M80,75 L80,332" stroke="#2f7f6f" stroke-width="6" stroke-linecap="round" fill="none"/>
     <g fill="#2f7f6f">
-      <circle cx="80" cy="90" r="5"/><circle cx="80" cy="120" r="5"/><circle cx="80" cy="150" r="5"/>
-      <circle cx="80" cy="180" r="5"/><circle cx="80" cy="210" r="5"/><circle cx="80" cy="240" r="5"/>
-      <circle cx="80" cy="270" r="5"/><circle cx="80" cy="300" r="5"/>
+      <circle cx="80" cy="95" r="5"/><circle cx="80" cy="123" r="5"/><circle cx="80" cy="151" r="5"/>
+      <circle cx="80" cy="179" r="5"/><circle cx="80" cy="207" r="5"/><circle cx="80" cy="235" r="5"/>
+      <circle cx="80" cy="263" r="5"/><circle cx="80" cy="291" r="5"/><circle cx="80" cy="315" r="5"/>
     </g>
   </g>
 
   <!-- panel 2: functional / C-curve -->
   <g>
-    <text x="240" y="58" text-anchor="middle" font-size="14" fill="#8a8578">機能性側弯(C字カーブ)</text>
-    <line x1="200" y1="70" x2="280" y2="70" stroke="#c9c4b4" stroke-width="2"/>
-    <line x1="195" y1="330" x2="275" y2="330" stroke="#c9c4b4" stroke-width="2" transform="rotate(-4 235 330)"/>
-    <path d="M240,70 C210,140 210,200 240,260 C255,290 250,310 240,330" stroke="#b8860b" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <text x="240" y="55" text-anchor="middle" font-size="13" fill="#8a8578">機能性側弯(C字カーブ)</text>
+    <path d="M205,65 C200,80 198,100 205,115 C196,160 200,260 220,330 C227,345 235,352 240,352 C255,352 265,345 268,330 C282,260 282,160 275,115 C282,100 280,80 275,65 C260,58 220,58 205,65 Z"
+          fill="url(#skin5)" stroke="#d8c3a5" stroke-width="2"/>
+    <line x1="202" y1="72" x2="278" y2="72" stroke="#c9c4b4" stroke-width="2"/>
+    <line x1="215" y1="332" x2="265" y2="332" stroke="#c9c4b4" stroke-width="2" transform="rotate(-4 240 332)"/>
+    <path d="M240,75 C210,140 210,200 240,258 C255,288 250,308 240,332" stroke="#d99c2e" stroke-width="6" stroke-linecap="round" fill="none"/>
   </g>
 
   <!-- panel 3: structural / S-curve -->
   <g>
-    <text x="400" y="58" text-anchor="middle" font-size="14" fill="#8a8578">構築性側弯(S字カーブ)</text>
-    <line x1="360" y1="70" x2="440" y2="70" stroke="#c9c4b4" stroke-width="2" transform="rotate(3 400 70)"/>
-    <line x1="360" y1="330" x2="440" y2="330" stroke="#c9c4b4" stroke-width="2" transform="rotate(-5 400 330)"/>
-    <path d="M410,70 C380,110 430,170 400,210 C375,245 415,290 390,330" stroke="#b3413e" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <text x="400" y="55" text-anchor="middle" font-size="13" fill="#8a8578">構築性側弯(S字カーブ)</text>
+    <path d="M365,65 C360,80 358,100 365,115 C356,160 360,260 378,330 C384,345 392,352 400,352 C415,352 425,345 428,330 C442,260 442,160 435,115 C442,100 440,80 435,65 C420,58 380,58 365,65 Z"
+          fill="url(#skin5)" stroke="#d8c3a5" stroke-width="2"/>
+    <line x1="362" y1="72" x2="438" y2="72" stroke="#c9c4b4" stroke-width="2" transform="rotate(3 400 72)"/>
+    <line x1="375" y1="332" x2="425" y2="332" stroke="#c9c4b4" stroke-width="2" transform="rotate(-5 400 332)"/>
+    <path d="M410,75 C380,110 430,170 400,210 C375,245 415,290 390,330" stroke="#c85f5a" stroke-width="6" stroke-linecap="round" fill="none"/>
   </g>
 
-  <text x="20" y="365" font-size="13" fill="#8a8578">横線は肩・骨盤の高さの目安。傾きの左右差が側弯の見た目に表れる</text>
+  <text x="20" y="385" font-size="12" fill="#8a8578">横線は肩・骨盤の高さの目安。傾きの左右差が側弯の見た目に表れる</text>
 </svg>

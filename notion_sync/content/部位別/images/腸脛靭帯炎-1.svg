@@ -1,30 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skin4" cx="42%" cy="25%" r="80%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="itband" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fc2b0"/>
+      <stop offset="100%" stop-color="#3d8a78"/>
+    </linearGradient>
+  </defs>
   <rect width="480" height="560" fill="#ffffff"/>
   <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">腸脛靭帯(脚を外側から見た模式図)</text>
+  <text x="240" y="66" text-anchor="middle" font-size="13" fill="#8a8578">股関節側</text>
 
-  <text x="240" y="66" text-anchor="middle" font-size="14" fill="#8a8578">股関節側</text>
+  <!-- leg silhouette: hip/thigh to below knee -->
+  <path d="M155,80 C120,148 114,235 132,308
+           C120,338 110,388 114,438
+           C118,472 132,497 157,510
+           L292,510
+           C314,493 324,463 320,432
+           C316,392 302,342 277,308
+           C300,235 294,148 260,80
+           C222,64 190,64 155,80 Z"
+        fill="url(#skin4)" stroke="#d8c3a5" stroke-width="3"/>
+  <line x1="114" y1="313" x2="320" y2="313" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="336" y="318" font-size="13" fill="#8a8578">膝関節</text>
 
-  <!-- leg outline: hip/thigh to below knee -->
-  <path d="M150,80 C118,150 112,240 130,310 C118,340 108,390 112,440 C116,475 130,500 155,512 L290,512 C312,495 322,465 318,435 C314,395 300,345 275,310 C298,240 292,150 258,80 C220,64 185,64 150,80 Z"
-        fill="none" stroke="#c9c4b4" stroke-width="3"/>
-  <line x1="112" y1="315" x2="318" y2="315" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="335" y="320" font-size="14" fill="#8a8578">膝関節</text>
+  <!-- lateral femoral condyle bump -->
+  <path d="M247,268 C267,283 277,298 280,313
+           C282,328 276,340 264,344
+           C252,340 246,328 246,313
+           C246,296 246,280 247,268 Z"
+        fill="#f6e3c8" stroke="#d8c3a5" stroke-width="1.5"/>
+  <text x="332" y="343" font-size="12" fill="#8a8578">大腿骨外顆</text>
 
-  <!-- femur (bone) hint + lateral condyle bump -->
-  <path d="M245,270 C265,285 275,300 278,315 C280,330 274,342 262,346 C250,342 244,330 244,315 C244,298 244,282 245,270 Z"
-        fill="#eadfc8" stroke="#c9c4b4" stroke-width="1.5"/>
-  <text x="330" y="345" font-size="13" fill="#8a8578">大腿骨外顆</text>
-
-  <!-- IT band: from hip/TFL & gluteus max down lateral thigh to Gerdy's tubercle below knee -->
-  <path d="M175,95 C165,150 168,220 180,280 C190,320 205,350 218,380 C232,405 244,420 252,435"
-        fill="none" stroke="#2f7f6f" stroke-width="10" stroke-linecap="round" stroke-opacity="0.75"/>
+  <!-- IT band: hip/TFL & gluteus max down to Gerdy's tubercle -->
+  <path d="M177,97 C167,150 170,220 182,280
+           C192,320 207,350 220,380
+           C234,405 246,420 254,435"
+        fill="none" stroke="url(#itband)" stroke-width="11" stroke-linecap="round"/>
 
   <!-- friction point highlight -->
-  <circle cx="258" cy="325" r="16" fill="#e79a9a" fill-opacity="0.55" stroke="#b3413e" stroke-width="2"/>
+  <circle cx="260" cy="323" r="16" fill="#f3c3bf" fill-opacity="0.8" stroke="#b3413e" stroke-width="2"/>
 
-  <text x="70" y="100" font-size="14" fill="#2f7f6f" font-weight="600">大腿筋膜張筋・</text>
-  <text x="70" y="118" font-size="14" fill="#2f7f6f" font-weight="600">大殿筋(起始)</text>
-  <text x="60" y="150" font-size="13" fill="#8a8578">腸脛靭帯</text>
+  <text x="70" y="102" font-size="14" fill="#2f7f6f" font-weight="600">大腿筋膜張筋・</text>
+  <text x="70" y="120" font-size="14" fill="#2f7f6f" font-weight="600">大殿筋(起始)</text>
 
   <text x="200" y="470" text-anchor="middle" font-size="14" fill="#2f7f6f" font-weight="600">脛骨(Gerdy結節)へ付着</text>
 

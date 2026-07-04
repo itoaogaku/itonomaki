@@ -1,42 +1,99 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
-  <rect width="480" height="560" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 580" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skin" cx="42%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="mLat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#bfe3d8"/>
+      <stop offset="55%" stop-color="#7fc2b0"/>
+      <stop offset="100%" stop-color="#4a9c89"/>
+    </linearGradient>
+    <linearGradient id="mRec" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="55%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+    <linearGradient id="mMed" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f3c3bf"/>
+      <stop offset="55%" stop-color="#e18884"/>
+      <stop offset="100%" stop-color="#c85f5a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="480" height="580" fill="#ffffff"/>
   <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">大腿四頭筋の4つの筋(前面から見た模式図)</text>
+  <text x="70" y="66" text-anchor="middle" font-size="13" fill="#8a8578">外側</text>
+  <text x="240" y="66" text-anchor="middle" font-size="13" fill="#8a8578">股関節側</text>
+  <text x="410" y="66" text-anchor="middle" font-size="13" fill="#8a8578">内側(体の中心側)</text>
 
-  <!-- orientation labels -->
-  <text x="70" y="70" text-anchor="middle" font-size="14" fill="#8a8578">外側</text>
-  <text x="410" y="70" text-anchor="middle" font-size="14" fill="#8a8578">内側(体の中心側)</text>
-  <text x="240" y="70" text-anchor="middle" font-size="14" fill="#8a8578">股関節側</text>
+  <!-- leg silhouette: hip -> thigh -> knee, natural muscular curve -->
+  <path d="M140,86
+           C104,110 92,160 96,215
+           C99,255 112,290 108,330
+           C105,365 96,400 104,432
+           C110,456 124,470 145,478
+           L340,478
+           C358,466 368,448 366,428
+           C362,398 348,368 352,335
+           C356,296 372,258 368,215
+           C365,158 348,108 312,84
+           C270,64 180,64 140,86 Z"
+        fill="url(#skin)" stroke="#d8c3a5" stroke-width="3"/>
 
-  <!-- overall thigh outline -->
-  <path d="M120,90 C90,140 85,220 95,300 C100,360 110,410 130,450 L350,450 C368,410 378,360 382,300 C390,220 385,140 358,90 C320,72 180,72 120,90 Z"
-        fill="none" stroke="#c9c4b4" stroke-width="3"/>
+  <!-- knee line -->
+  <line x1="104" y1="440" x2="366" y2="440" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 4"/>
+  <ellipse cx="235" cy="462" rx="34" ry="20" fill="#f6e3c8" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="235" y="467" text-anchor="middle" font-size="11" fill="#a08a63">膝蓋骨</text>
 
-  <!-- vastus lateralis (outer) -->
-  <path d="M120,90 C92,140 86,220 96,300 C101,358 110,405 128,448 L188,448 C178,390 172,320 176,250 C180,180 168,120 150,88 Z"
-        fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f" stroke-width="2"/>
+  <!-- vastus lateralis: fusiform muscle belly, outer side -->
+  <path d="M148,110
+           C118,150 108,210 118,270
+           C124,310 132,350 148,390
+           C158,412 172,428 190,436
+           L205,428
+           C188,392 176,350 172,305
+           C168,255 172,195 190,140
+           C182,128 165,116 148,110 Z"
+        fill="url(#mLat)" stroke="#2f7f6f" stroke-width="2" stroke-linejoin="round"/>
 
-  <!-- rectus femoris (center) -->
-  <path d="M178,86 C170,150 166,220 172,290 C176,340 184,400 196,448 L268,448 C280,400 286,340 288,290 C292,220 288,150 278,86 C240,74 210,74 178,86 Z"
-        fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b" stroke-width="2"/>
+  <!-- rectus femoris: central fusiform muscle belly -->
+  <path d="M205,82
+           C182,140 172,210 178,275
+           C182,325 196,380 214,428
+           L266,428
+           C282,380 294,325 296,275
+           C300,205 292,135 270,80
+           C248,68 226,68 205,82 Z"
+        fill="url(#mRec)" stroke="#b8860b" stroke-width="2" stroke-linejoin="round"/>
 
-  <!-- vastus medialis (inner, teardrop near knee) -->
-  <path d="M280,180 C300,190 320,230 322,290 C324,350 316,410 300,448 L268,448 C280,400 286,340 288,290 C290,240 286,200 280,180 Z"
-        fill="#e79a9a" fill-opacity="0.6" stroke="#b3413e" stroke-width="2"/>
+  <!-- vastus medialis: teardrop bulging near the knee (VMO bulge) -->
+  <path d="M282,165
+           C305,185 320,225 322,270
+           C324,320 316,375 298,418
+           C288,432 274,432 264,424
+           C280,388 288,340 288,295
+           C288,250 282,205 270,175
+           C275,168 279,166 282,165 Z"
+        fill="url(#mMed)" stroke="#b3413e" stroke-width="2" stroke-linejoin="round"/>
 
-  <!-- knee reference line -->
-  <line x1="130" y1="450" x2="350" y2="450" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="240" y="470" text-anchor="middle" font-size="14" fill="#8a8578">膝側</text>
+  <!-- subtle highlight strokes to suggest muscle fiber direction -->
+  <g stroke-opacity="0.35" stroke-linecap="round" fill="none">
+    <path d="M150,150 C138,210 138,270 155,330" stroke="#ffffff" stroke-width="3"/>
+    <path d="M225,120 C212,200 212,280 228,360" stroke="#ffffff" stroke-width="3"/>
+    <path d="M300,210 C308,260 306,320 292,375" stroke="#ffffff" stroke-width="3"/>
+  </g>
 
   <!-- legend -->
-  <g font-size="15">
-    <rect x="20" y="495" width="16" height="16" fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f"/>
-    <text x="42" y="508" fill="#2b2a27">外側広筋</text>
+  <g font-size="14">
+    <rect x="20" y="500" width="16" height="16" fill="url(#mLat)" stroke="#2f7f6f"/>
+    <text x="42" y="513" fill="#2b2a27">外側広筋</text>
 
-    <rect x="140" y="495" width="16" height="16" fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b"/>
-    <text x="162" y="508" fill="#2b2a27">大腿直筋</text>
+    <rect x="140" y="500" width="16" height="16" fill="url(#mRec)" stroke="#b8860b"/>
+    <text x="162" y="513" fill="#2b2a27">大腿直筋</text>
 
-    <rect x="260" y="495" width="16" height="16" fill="#e79a9a" fill-opacity="0.6" stroke="#b3413e"/>
-    <text x="282" y="508" fill="#2b2a27">内側広筋(VMOは膝側の一部)</text>
+    <rect x="260" y="500" width="16" height="16" fill="url(#mMed)" stroke="#b3413e"/>
+    <text x="282" y="513" fill="#2b2a27">内側広筋(VMOは膝側の一部)</text>
   </g>
   <text x="20" y="540" font-size="13" fill="#8a8578">※中間広筋は深層にあり表面から見えないため図には含みません</text>
 </svg>

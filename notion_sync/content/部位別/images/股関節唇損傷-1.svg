@@ -1,28 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="femHead" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </radialGradient>
+    <linearGradient id="labrum" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a98ccb"/>
+      <stop offset="100%" stop-color="#7a5ca8"/>
+    </linearGradient>
+  </defs>
   <rect width="480" height="400" fill="#ffffff"/>
   <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">股関節唇(寛骨臼の断面模式図)</text>
 
-  <!-- acetabulum socket (cup shape) -->
+  <!-- acetabulum socket (cup shape, bone-colored) -->
   <path d="M120,140 C120,90 170,60 240,60 C310,60 360,90 360,140 C360,170 345,190 320,200"
-        fill="none" stroke="#c9c4b4" stroke-width="16" stroke-linecap="round"/>
+        fill="none" stroke="#e2cfa6" stroke-width="18" stroke-linecap="round"/>
 
   <!-- labrum: rim around the socket opening -->
   <path d="M115,145 C112,95 165,55 240,52 C315,55 368,95 365,145"
-        fill="none" stroke="#7a5ca8" stroke-width="10" stroke-linecap="round" stroke-opacity="0.8"/>
+        fill="none" stroke="url(#labrum)" stroke-width="11" stroke-linecap="round"/>
 
   <!-- femoral head (ball) sitting in socket -->
-  <circle cx="240" cy="165" r="85" fill="#f4cf7a" fill-opacity="0.55" stroke="#b8860b" stroke-width="2"/>
-  <text x="240" y="170" text-anchor="middle" font-size="14" fill="#8a6d1f">大腿骨頭</text>
+  <circle cx="240" cy="165" r="85" fill="url(#femHead)" stroke="#b8860b" stroke-width="2"/>
+  <text x="240" y="170" text-anchor="middle" font-size="14" fill="#7a5c1a" font-weight="600">大腿骨頭</text>
 
   <!-- seal effect arrows -->
   <path d="M175,90 l-15,-10 M175,90 l5,-18" stroke="#b3413e" stroke-width="3" fill="none" stroke-linecap="round"/>
   <path d="M305,90 l15,-10 M305,90 l-5,-18" stroke="#b3413e" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <text x="240" y="240" text-anchor="middle" font-size="13" fill="#b3413e">密閉構造による陰圧で吸盤のように安定(吸盤効果)</text>
+  <text x="240" y="245" text-anchor="middle" font-size="13" fill="#b3413e">密閉構造による陰圧で吸盤のように安定(吸盤効果)</text>
 
   <text x="15" y="105" font-size="14" fill="#7a5ca8" font-weight="600">関節唇</text>
   <text x="15" y="122" font-size="12" fill="#8a8578">(パッキン+</text>
   <text x="15" y="137" font-size="12" fill="#8a8578">フックの役割)</text>
-  <text x="140" y="270" font-size="14" fill="#8a6d1f" font-weight="600">寛骨臼(骨盤側のくぼみ)</text>
+  <text x="140" y="275" font-size="14" fill="#8a6d1f" font-weight="600">寛骨臼(骨盤側のくぼみ)</text>
 
-  <text x="20" y="330" font-size="13" fill="#8a8578">※関節唇が損傷すると密閉性が失われ、吸盤効果が弱まる</text>
+  <text x="20" y="335" font-size="13" fill="#8a8578">※関節唇が損傷すると密閉性が失われ、吸盤効果が弱まる</text>
 </svg>
