@@ -1,0 +1,63 @@
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import { Sidebar, type NavSection } from "./Sidebar";
+import { ThemeToggle } from "./ThemeToggle";
+
+export function AppShell({
+  sections,
+  children,
+}: {
+  sections: NavSection[];
+  children: React.ReactNode;
+}) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const closeMobile = () => setMobileOpen(false);
+
+  return (
+    <div className="flex min-h-screen">
+      <div className="hidden md:block md:w-72 md:shrink-0">
+        <div className="sticky top-0 h-screen">
+          <Sidebar sections={sections} />
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden
+          />
+          <div className="absolute inset-y-0 left-0 w-[85vw] max-w-80 shadow-2xl">
+            <Sidebar sections={sections} onNavigate={closeMobile} />
+          </div>
+        </div>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[var(--border)] bg-[var(--surface)]/90 px-4 py-3 backdrop-blur md:px-8">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            aria-label="メニューを開く"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--fg)] hover:bg-[var(--surface-2)] md:hidden"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight text-[var(--fg-strong)]">
+            <span className="text-lg">🏃</span>
+            <span className="truncate">トレーナー知見ライブラリ</span>
+          </Link>
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
+          </div>
+        </header>
+        <main className="flex-1">{children}</main>
+      </div>
+    </div>
+  );
+}

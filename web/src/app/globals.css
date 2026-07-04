@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+:root {
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", Meiryo,
+    "Segoe UI", Roboto, sans-serif;
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --surface-2: #f3f1ec;
+  --border: #e7e3da;
+  --fg: #2b2a27;
+  --fg-strong: #17160f;
+  --muted: #8a8578;
+  --accent: #2f7f6f;
+  --accent-fg: #ffffff;
+  --code-bg: #efece3;
+  --code-fg: #4a4638;
+  --shadow-color: 30 25 10;
+}
+
+[data-theme="dark"] {
+  --bg: #16150f;
+  --surface: #1d1c15;
+  --surface-2: #24231b;
+  --border: #34321f;
+  --fg: #eae7db;
+  --fg-strong: #fbfaf5;
+  --muted: #a4a08c;
+  --accent: #5fc0a8;
+  --accent-fg: #0c1a16;
+  --code-bg: #2a2818;
+  --code-fg: #d8d3bd;
+  --shadow-color: 0 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16150f;
+    --surface: #1d1c15;
+    --surface-2: #24231b;
+    --border: #34321f;
+    --fg: #eae7db;
+    --fg-strong: #fbfaf5;
+    --muted: #a4a08c;
+    --accent: #5fc0a8;
+    --accent-fg: #0c1a16;
+    --code-bg: #2a2818;
+    --code-fg: #d8d3bd;
+    --shadow-color: 0 0 0;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-fg-strong: var(--fg-strong);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-body);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  color-scheme: light dark;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+/* ThemeToggle: both icons are always in the DOM, only one is shown, chosen
+   purely by CSS so no client JS state/effect is needed to pick the icon. */
+.theme-icon-dark-visible {
+  display: none;
+}
+.theme-icon-light-visible {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-icon-dark-visible {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .theme-icon-light-visible {
+    display: none;
+  }
+}
+[data-theme="dark"] .theme-icon-dark-visible {
+  display: block;
+}
+[data-theme="dark"] .theme-icon-light-visible {
+  display: none;
+}
+[data-theme="light"] .theme-icon-dark-visible {
+  display: none;
+}
+[data-theme="light"] .theme-icon-light-visible {
+  display: block;
+}
+
+/* thin, unobtrusive scrollbar for the sidebar */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
