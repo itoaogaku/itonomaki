@@ -17,7 +17,7 @@ from pathlib import Path
 
 import requests
 
-from md_to_blocks import markdown_to_blocks
+from md_to_blocks import markdown_to_blocks, PARSER_VERSION
 
 NOTION_VERSION = "2022-06-28"
 API_BASE = "https://api.notion.com/v1"
@@ -105,7 +105,8 @@ def ensure_page(parent_id, title):
 
 
 def content_hash(text):
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+    salted = f"{PARSER_VERSION}:{text}"
+    return hashlib.sha256(salted.encode("utf-8")).hexdigest()[:16]
 
 
 def existing_hash(page_id):

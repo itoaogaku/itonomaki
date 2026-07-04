@@ -1,6 +1,11 @@
 """Convert a lightweight Markdown subset into Notion API block objects."""
 import re
 
+# Bump this whenever markdown_to_blocks()'s output changes shape for the same
+# input text, so sync_to_notion.py's content hash invalidates and re-syncs
+# every page instead of skipping them as "unchanged".
+PARSER_VERSION = 2
+
 INLINE_PATTERN = re.compile(r"(\*\*.+?\*\*|`.+?`)")
 
 
@@ -40,6 +45,7 @@ def markdown_to_blocks(md_text):
     lines = md_text.split("\n")
     blocks = []
     table_buffer = []
+    quote_buffer = []
 
     def flush_table():
         nonlocal table_buffer
@@ -59,6 +65,35 @@ def markdown_to_blocks(md_text):
         })
         table_buffer = []
 
+    def flush_quote():
+        nonlocal quote_buffer
+        if not quote_buffer:
+            return
+        first = quote_buffer[0]
+        if first.startswith("⚠️"):
+            icon = "⚠️"
+            first = first[len("⚠️"):].strip()
+        elif first.startswith("💡"):
+            icon = "💡"
+            first = first[len("💡"):].strip()
+        else:
+            icon = "💡"
+        lines_for_callout = [first] + quote_buffer[1:]
+        rich_text = []
+        for i, line in enumerate(lines_for_callout):
+            if i > 0:
+                rich_text.append({"type": "text", "text": {"content": "\n"}})
+            rich_text.extend(parse_inline(line))
+        blocks.append({
+            "object": "block",
+            "type": "callout",
+            "callout": {
+                "rich_text": rich_text,
+                "icon": {"type": "emoji", "emoji": icon},
+            },
+        })
+        quote_buffer = []
+
     for raw_line in lines:
         stripped = raw_line.strip()
 
@@ -66,6 +101,9 @@ def markdown_to_blocks(md_text):
             table_buffer.append([c.strip() for c in stripped.strip("|").split("|")])
             continue
         flush_table()
+
+        if not stripped.startswith(">"):
+            flush_quote()
 
         if not stripped:
             continue
@@ -82,23 +120,7 @@ def markdown_to_blocks(md_text):
         elif stripped == "---":
             blocks.append({"object": "block", "type": "divider", "divider": {}})
         elif stripped.startswith(">"):
-            content = stripped.lstrip(">").strip()
-            if content.startswith("⚠️"):
-                icon = "⚠️"
-                content = content[len("⚠️"):].strip()
-            elif content.startswith("💡"):
-                icon = "💡"
-                content = content[len("💡"):].strip()
-            else:
-                icon = "💡"
-            blocks.append({
-                "object": "block",
-                "type": "callout",
-                "callout": {
-                    "rich_text": parse_inline(content),
-                    "icon": {"type": "emoji", "emoji": icon},
-                },
-            })
+            quote_buffer.append(stripped.lstrip(">").strip())
         elif re.match(r"^- \[ \] ", stripped):
             blocks.append({"object": "block", "type": "to_do",
                             "to_do": {"rich_text": parse_inline(stripped[6:]), "checked": False}})
@@ -124,4 +146,5 @@ def markdown_to_blocks(md_text):
                             "paragraph": {"rich_text": parse_inline(stripped)}})
 
     flush_table()
+    flush_quote()
     return blocks
