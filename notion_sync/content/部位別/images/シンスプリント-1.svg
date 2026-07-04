@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinS" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="tibiaG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f6ecd8"/>
+      <stop offset="100%" stop-color="#e2cfa6"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="560" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">シンスプリントの好発部位(下腿を内側から見た模式図)</text>
+  <text x="240" y="66" text-anchor="middle" font-size="13" fill="#8a8578">膝側</text>
+
+  <!-- lower leg silhouette -->
+  <path d="M170,80 C138,130 128,210 140,290
+           C146,340 152,390 168,438
+           C180,460 196,470 212,472
+           L300,472
+           C314,455 322,428 320,398
+           C316,345 306,265 314,180
+           C300,120 262,86 216,76
+           C200,74 182,76 170,80 Z"
+        fill="url(#skinS)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- tibia (shin bone), medial border visible under skin -->
+  <path d="M195,120 C182,190 178,270 186,350 C190,395 198,435 210,462
+           L228,460 C220,425 214,388 211,348 C206,270 210,190 220,125 Z"
+        fill="url(#tibiaG)" stroke="#c9b078" stroke-width="2"/>
+  <text x="245" y="300" font-size="13" fill="#8a7444">脛骨</text>
+
+  <!-- pain zone highlight: medial border, middle-to-lower third -->
+  <rect x="178" y="290" width="46" height="110" rx="14" fill="#e79a9a" fill-opacity="0.45" stroke="#b3413e" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="330" y="345" font-size="13" fill="#b3413e" font-weight="600">好発部位</text>
+  <text x="320" y="363" font-size="12" fill="#8a8578">(内果より12〜20cm上)</text>
+
+  <!-- muscles pulling on the periosteum: soleus, tibialis posterior, flexor digitorum -->
+  <path d="M186,180 C170,230 166,290 176,340" stroke="#4a9c89" stroke-width="9" stroke-linecap="round" fill="none"/>
+  <path d="M198,200 C186,250 182,300 190,350" stroke="#8a68b8" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M210,230 C202,270 200,310 206,350" stroke="#d99c2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+  <text x="60" y="170" font-size="13" fill="#2f7f6f" font-weight="600">ヒラメ筋</text>
+  <text x="60" y="440" font-size="13" fill="#7a5ca8" font-weight="600">後脛骨筋</text>
+  <text x="230" y="440" font-size="13" fill="#b8860b" font-weight="600">長趾屈筋</text>
+
+  <text x="20" y="500" font-size="13" fill="#8a8578">※これらの筋の柔軟性低下が脛骨表面の骨膜を牽引し炎症を起こす</text>
+</svg>

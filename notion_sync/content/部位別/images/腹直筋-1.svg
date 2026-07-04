@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinT" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="rectusAb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="560" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">腹直筋(体幹を前面から見た模式図)</text>
+  <text x="240" y="66" text-anchor="middle" font-size="13" fill="#8a8578">胸郭側</text>
+
+  <!-- torso silhouette -->
+  <path d="M150,80 C120,110 108,160 112,210
+           C104,250 100,300 108,350
+           C114,390 128,430 150,460
+           L330,460
+           C352,430 366,390 372,350
+           C380,300 376,250 368,210
+           C372,160 360,110 330,80
+           C280,60 200,60 150,80 Z"
+        fill="url(#skinT)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- rib cage hint -->
+  <path d="M130,120 C170,135 310,135 350,120" fill="none" stroke="#d8c3a5" stroke-width="2" stroke-dasharray="3 5"/>
+  <text x="240" y="105" text-anchor="middle" font-size="12" fill="#8a8578">剣状突起(みぞおち)</text>
+  <circle cx="240" cy="118" r="5" fill="#c9b078"/>
+
+  <!-- rectus abdominis: one continuous sheet, split by linea alba, with tendinous intersections -->
+  <path d="M188,130 C182,180 180,240 184,300 C187,350 195,405 210,450 L228,450
+           C216,405 210,350 208,300 C206,240 210,180 218,132 Z"
+        fill="url(#rectusAb)" stroke="#b8860b" stroke-width="2"/>
+  <path d="M262,132 C270,180 274,240 272,300 C270,350 264,405 252,450 L270,450
+           C285,405 293,350 292,300 C296,240 294,180 282,130 Z"
+        fill="url(#rectusAb)" stroke="#b8860b" stroke-width="2"/>
+
+  <!-- linea alba (midline) -->
+  <line x1="240" y1="128" x2="240" y2="452" stroke="#a97c1f" stroke-width="2" stroke-dasharray="2 4"/>
+
+  <!-- tendinous intersections (horizontal segment lines = "6-pack" look) -->
+  <g stroke="#a97c1f" stroke-width="3">
+    <path d="M186,185 C210,190 270,190 280,183" fill="none"/>
+    <path d="M183,255 C210,262 270,262 285,254" fill="none"/>
+    <path d="M186,330 C210,335 270,335 282,328" fill="none"/>
+  </g>
+
+  <text x="60" y="200" font-size="14" fill="#b8860b" font-weight="600">腹直筋</text>
+  <text x="60" y="218" font-size="12" fill="#8a8578">(一枚の連続した筋肉)</text>
+  <text x="340" y="440" font-size="13" fill="#8a8578">恥骨へ</text>
+
+  <text x="20" y="490" font-size="13" fill="#8a8578">※腹直筋は上部・下部を個別に動かせない一枚の筋肉として機能する</text>
+</svg>

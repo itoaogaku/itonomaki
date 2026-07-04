@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinP" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="piriform" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">梨状筋と坐骨神経(殿部を背面から見た模式図)</text>
+
+  <!-- buttock/pelvis silhouette -->
+  <path d="M110,80 C90,110 82,160 90,205
+           C80,240 78,290 92,335
+           C104,375 130,405 165,415
+           L315,415
+           C350,405 376,375 388,335
+           C402,290 400,240 390,205
+           C398,160 390,110 370,80
+           C320,58 160,58 110,80 Z"
+        fill="url(#skinP)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- sacrum hint -->
+  <path d="M200,90 C220,84 260,84 280,90 C284,140 280,190 268,225 C255,235 225,235 212,225 C200,190 196,140 200,90 Z"
+        fill="#f6e3c8" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="240" y="150" text-anchor="middle" font-size="13" fill="#8a7444">仙骨</text>
+
+  <!-- sciatic nerve, running from beneath piriformis down the leg -->
+  <path d="M300,230 C310,270 305,310 290,350 C278,378 262,398 245,412"
+        fill="none" stroke="#f4d35e" stroke-width="8" stroke-linecap="round" stroke-opacity="0.9"/>
+  <text x="330" y="380" font-size="13" fill="#a68a1f" font-weight="600">坐骨神経</text>
+
+  <!-- piriformis muscle: sacrum to greater trochanter -->
+  <path d="M275,150 C300,170 330,195 355,220
+           C368,232 372,248 366,262
+           C358,276 340,278 328,268
+           C305,248 282,222 262,198
+           C258,182 262,166 275,150 Z"
+        fill="url(#piriform)" stroke="#b8860b" stroke-width="2"/>
+  <text x="345" y="200" font-size="14" fill="#8a6d1f" font-weight="600">梨状筋</text>
+
+  <!-- greater trochanter marker -->
+  <circle cx="368" cy="255" r="10" fill="#f6e3c8" stroke="#c9b078" stroke-width="2"/>
+  <text x="395" y="260" font-size="12" fill="#8a8578">大転子</text>
+
+  <text x="20" y="440" font-size="13" fill="#8a8578">※梨状筋がスパズム(過緊張)を起こすと直下の坐骨神経を圧迫しやすい</text>
+</svg>

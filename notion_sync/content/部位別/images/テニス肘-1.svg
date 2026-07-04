@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinE" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="extMass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e79a9a"/>
+      <stop offset="100%" stop-color="#c85f5a"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">テニス肘(肘を外側から見た模式図)</text>
+  <text x="240" y="66" text-anchor="middle" font-size="13" fill="#8a8578">上腕側</text>
+
+  <!-- arm silhouette: upper arm to forearm -->
+  <path d="M175,80 C145,110 132,155 138,200
+           C118,230 105,275 108,320
+           C112,375 130,420 160,440
+           L300,440
+           C325,420 338,380 335,340
+           C332,290 318,235 296,195
+           C302,150 288,105 258,80
+           C230,64 200,64 175,80 Z"
+        fill="url(#skinE)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- lateral epicondyle bump -->
+  <circle cx="205" cy="205" r="16" fill="#f6e3c8" stroke="#c9b078" stroke-width="2"/>
+  <text x="145" y="200" font-size="13" fill="#8a7444" font-weight="600">上腕骨外側上顆</text>
+
+  <!-- pain highlight at origin point -->
+  <circle cx="205" cy="205" r="22" fill="none" stroke="#b3413e" stroke-width="2.5" stroke-dasharray="4 4"/>
+
+  <!-- extensor muscle mass: fanning out from the epicondyle down the forearm -->
+  <path d="M198,195 C220,210 245,235 258,270
+           C270,305 272,345 262,385
+           C255,405 240,418 222,422
+           C205,418 195,402 195,382
+           C198,340 195,295 185,255
+           C180,232 185,210 198,195 Z"
+        fill="url(#extMass)" stroke="#a3403c" stroke-width="2"/>
+  <text x="300" y="310" font-size="13" fill="#a3403c" font-weight="600">短橈側手根伸筋</text>
+  <text x="300" y="328" font-size="12" fill="#8a8578">(手首・指を反らす筋群)</text>
+
+  <text x="20" y="460" font-size="13" fill="#8a8578">※腱の付着部(起始)に微細損傷が蓄積して痛みが生じる</text>
+</svg>
