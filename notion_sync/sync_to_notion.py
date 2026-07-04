@@ -24,6 +24,15 @@ API_BASE = "https://api.notion.com/v1"
 CONTENT_DIR = Path(__file__).parent / "content"
 HASH_PREFIX = "sync-hash:"
 
+# Maps (section, new topic title) -> [old titles the page may still exist under
+# in Notion]. When a local .md file is renamed, add an entry here so the
+# existing Notion page is renamed in place instead of leaving an orphaned
+# duplicate under its old title. Safe to remove an entry once the rename has
+# been applied (subsequent runs find the page by its new title directly).
+RENAMES = {
+    ("フィジカル", "睡眠"): ["睡眠について"],
+}
+
 
 def _headers():
     return {
@@ -87,6 +96,11 @@ def create_page(parent_id, title):
     return notion_request("POST", "/pages", json=body)["id"]
 
 
+def rename_page(page_id, new_title):
+    body = {"properties": {"title": {"title": [{"type": "text", "text": {"content": new_title}}]}}}
+    notion_request("PATCH", f"/pages/{page_id}", json=body)
+
+
 def clear_children(block_id):
     for child in get_children(block_id):
         notion_request("DELETE", f"/blocks/{child['id']}")
@@ -97,11 +111,17 @@ def append_blocks(block_id, blocks):
         notion_request("PATCH", f"/blocks/{block_id}/children", json={"children": blocks[i:i + 100]})
 
 
-def ensure_page(parent_id, title):
+def ensure_page(parent_id, title, old_titles=None):
     page_id = find_child_page(parent_id, title)
-    if page_id is None:
-        return create_page(parent_id, title), True
-    return page_id, False
+    if page_id is not None:
+        return page_id, False
+    for old_title in old_titles or []:
+        old_page_id = find_child_page(parent_id, old_title)
+        if old_page_id is not None:
+            rename_page(old_page_id, title)
+            print(f"  [topic] renamed '{old_title}' -> '{title}'")
+            return old_page_id, False
+    return create_page(parent_id, title), True
 
 
 def content_hash(text):
@@ -156,7 +176,8 @@ def main():
             title = md_file.stem
             text = md_file.read_text(encoding="utf-8")
             new_hash = content_hash(text)
-            topic_page_id, created = ensure_page(section_page_id, title)
+            old_titles = RENAMES.get((section_title, title))
+            topic_page_id, created = ensure_page(section_page_id, title, old_titles)
 
             if not created and existing_hash(topic_page_id) == new_hash:
                 print(f"  [topic] {title} -> {topic_page_id} (unchanged, skipped)")
