@@ -4,9 +4,10 @@ import re
 # Bump this whenever markdown_to_blocks()'s output changes shape for the same
 # input text, so sync_to_notion.py's content hash invalidates and re-syncs
 # every page instead of skipping them as "unchanged".
-PARSER_VERSION = 2
+PARSER_VERSION = 3
 
 INLINE_PATTERN = re.compile(r"(\*\*.+?\*\*|`.+?`)")
+IMAGE_PATTERN = re.compile(r"^!\[(.*?)\]\((.*?)\)$")
 
 
 def parse_inline(text):
@@ -41,7 +42,8 @@ def _table_row(cells):
     }
 
 
-def markdown_to_blocks(md_text):
+def markdown_to_blocks(md_text, resolve_image=None):
+    """resolve_image(alt, path) -> Notion image block dict, or None to skip."""
     lines = md_text.split("\n")
     blocks = []
     table_buffer = []
@@ -134,6 +136,12 @@ def markdown_to_blocks(md_text):
             content = re.sub(r"^\d+\.\s", "", stripped)
             blocks.append({"object": "block", "type": "numbered_list_item",
                             "numbered_list_item": {"rich_text": parse_inline(content)}})
+        elif IMAGE_PATTERN.match(stripped):
+            m = IMAGE_PATTERN.match(stripped)
+            if resolve_image is not None:
+                image_block = resolve_image(m.group(1), m.group(2))
+                if image_block is not None:
+                    blocks.append(image_block)
         elif stripped.startswith("⚠️"):
             blocks.append({
                 "object": "block",

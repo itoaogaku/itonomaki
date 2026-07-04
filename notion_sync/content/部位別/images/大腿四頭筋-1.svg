@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <rect width="480" height="560" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">大腿四頭筋の4つの筋(前面から見た模式図)</text>
+
+  <!-- orientation labels -->
+  <text x="70" y="70" text-anchor="middle" font-size="14" fill="#8a8578">外側</text>
+  <text x="410" y="70" text-anchor="middle" font-size="14" fill="#8a8578">内側(体の中心側)</text>
+  <text x="240" y="70" text-anchor="middle" font-size="14" fill="#8a8578">股関節側</text>
+
+  <!-- overall thigh outline -->
+  <path d="M120,90 C90,140 85,220 95,300 C100,360 110,410 130,450 L350,450 C368,410 378,360 382,300 C390,220 385,140 358,90 C320,72 180,72 120,90 Z"
+        fill="none" stroke="#c9c4b4" stroke-width="3"/>
+
+  <!-- vastus lateralis (outer) -->
+  <path d="M120,90 C92,140 86,220 96,300 C101,358 110,405 128,448 L188,448 C178,390 172,320 176,250 C180,180 168,120 150,88 Z"
+        fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f" stroke-width="2"/>
+
+  <!-- rectus femoris (center) -->
+  <path d="M178,86 C170,150 166,220 172,290 C176,340 184,400 196,448 L268,448 C280,400 286,340 288,290 C292,220 288,150 278,86 C240,74 210,74 178,86 Z"
+        fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b" stroke-width="2"/>
+
+  <!-- vastus medialis (inner, teardrop near knee) -->
+  <path d="M280,180 C300,190 320,230 322,290 C324,350 316,410 300,448 L268,448 C280,400 286,340 288,290 C290,240 286,200 280,180 Z"
+        fill="#e79a9a" fill-opacity="0.6" stroke="#b3413e" stroke-width="2"/>
+
+  <!-- knee reference line -->
+  <line x1="130" y1="450" x2="350" y2="450" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="240" y="470" text-anchor="middle" font-size="14" fill="#8a8578">膝側</text>
+
+  <!-- legend -->
+  <g font-size="15">
+    <rect x="20" y="495" width="16" height="16" fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f"/>
+    <text x="42" y="508" fill="#2b2a27">外側広筋</text>
+
+    <rect x="140" y="495" width="16" height="16" fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b"/>
+    <text x="162" y="508" fill="#2b2a27">大腿直筋</text>
+
+    <rect x="260" y="495" width="16" height="16" fill="#e79a9a" fill-opacity="0.6" stroke="#b3413e"/>
+    <text x="282" y="508" fill="#2b2a27">内側広筋(VMOは膝側の一部)</text>
+  </g>
+  <text x="20" y="540" font-size="13" fill="#8a8578">※中間広筋は深層にあり表面から見えないため図には含みません</text>
+</svg>

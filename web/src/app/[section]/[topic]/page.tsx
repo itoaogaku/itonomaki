@@ -29,7 +29,7 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
   const prev = index > 0 ? siblings[index - 1] : undefined;
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
 
-  const blocks = parseMarkdown(topic.raw);
+  const blocks = parseMarkdown(topic.raw, `/images/${encodeURIComponent(sectionSlug)}/`);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">

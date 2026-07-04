@@ -79,6 +79,22 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
               );
             case "divider":
               return <hr key={i} className="my-8 border-[var(--border)]" />;
+            case "image":
+              return (
+                <figure key={i} className="my-6">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- svg illustrations, no need for next/image optimization */}
+                  <img
+                    src={block.src}
+                    alt={block.alt}
+                    className="mx-auto max-w-full rounded-lg border border-[var(--border)] bg-white"
+                  />
+                  {block.alt && (
+                    <figcaption className="mt-2 text-center text-sm text-[var(--muted)]">
+                      {block.alt}
+                    </figcaption>
+                  )}
+                </figure>
+              );
             case "callout":
               return <Callout key={i} icon={block.icon} lines={block.lines} />;
             case "table":

@@ -16,9 +16,11 @@ export type Block =
   | { type: "todo"; text: InlineToken[]; checked: boolean }
   | { type: "bulleted_list_item"; text: InlineToken[] }
   | { type: "numbered_list_item"; text: InlineToken[] }
-  | { type: "table"; header: InlineToken[][]; rows: InlineToken[][][] };
+  | { type: "table"; header: InlineToken[][]; rows: InlineToken[][][] }
+  | { type: "image"; src: string; alt: string };
 
 const INLINE_PATTERN = /(\*\*.+?\*\*|`.+?`)/;
+const IMAGE_PATTERN = /^!\[(.*?)\]\((.*?)\)$/;
 
 export function parseInline(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
@@ -50,7 +52,7 @@ function isTableSeparator(line: string): boolean {
   return /^[\s:|-]+$/.test(line);
 }
 
-export function parseMarkdown(mdText: string): Block[] {
+export function parseMarkdown(mdText: string, imageBase: string = ""): Block[] {
   const lines = mdText.split("\n");
   const blocks: Block[] = [];
   let tableBuffer: string[] = [];
@@ -109,6 +111,14 @@ export function parseMarkdown(mdText: string): Block[] {
       blocks.push({ type: "divider" });
     } else if (stripped.startsWith(">")) {
       quoteBuffer.push(stripped.replace(/^>+/, "").trim());
+    } else if (IMAGE_PATTERN.test(stripped)) {
+      const match = stripped.match(IMAGE_PATTERN)!;
+      // Source markdown always points at an "images/" folder alongside the
+      // topic file (see notion_sync/content/<section>/images/); the public
+      // copy drops that intermediate segment (see copy-content.mjs), so the
+      // prefix is stripped here to match.
+      const relPath = match[2].replace(/^images\//, "");
+      blocks.push({ type: "image", alt: match[1], src: imageBase + relPath });
     } else if (/^- \[ \] /.test(stripped)) {
       blocks.push({ type: "todo", text: parseInline(stripped.slice(6)), checked: false });
     } else if (/^- \[[xX]\] /.test(stripped)) {

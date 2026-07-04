@@ -40,6 +40,7 @@ yarn-error.log*
 # content is copied in from ../notion_sync/content at build/dev time
 # (see scripts/copy-content.mjs) — not the source of truth, don't commit it
 /content
+/public/images
 
 # typescript
 *.tsbuildinfo

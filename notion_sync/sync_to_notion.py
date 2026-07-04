@@ -11,18 +11,24 @@ Required environment variables:
 """
 import hashlib
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
 
 import requests
 
-from md_to_blocks import markdown_to_blocks, PARSER_VERSION
+from md_to_blocks import markdown_to_blocks, parse_inline, PARSER_VERSION
 
 NOTION_VERSION = "2022-06-28"
 API_BASE = "https://api.notion.com/v1"
 CONTENT_DIR = Path(__file__).parent / "content"
 HASH_PREFIX = "sync-hash:"
+
+# Headless Chromium used to rasterize our source .svg illustrations to .png
+# before uploading, since Notion's image block does not reliably render svg.
+CHROMIUM_BIN = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
+PNG_CACHE_DIR = Path(__file__).parent / ".svg_render_cache"
 
 # Maps (section, new topic title) -> [old titles the page may still exist under
 # in Notion]. When a local .md file is renamed, add an entry here so the
@@ -124,6 +130,65 @@ def ensure_page(parent_id, title, old_titles=None):
     return create_page(parent_id, title), True
 
 
+def svg_to_png(svg_path):
+    """Rasterize an .svg to .png via headless Chromium, cached by mtime+size."""
+    PNG_CACHE_DIR.mkdir(exist_ok=True)
+    stat = svg_path.stat()
+    cache_key = hashlib.sha256(f"{svg_path}:{stat.st_mtime}:{stat.st_size}".encode()).hexdigest()[:16]
+    png_path = PNG_CACHE_DIR / f"{cache_key}.png"
+    if png_path.exists():
+        return png_path
+    subprocess.run(
+        [
+            CHROMIUM_BIN, "--headless", "--disable-gpu", "--no-sandbox",
+            "--disable-software-rasterizer", "--hide-scrollbars",
+            f"--screenshot={png_path}", "--window-size=1000,1000",
+            "--default-background-color=00000000",
+            svg_path.resolve().as_uri(),
+        ],
+        check=True, capture_output=True, timeout=30,
+    )
+    return png_path
+
+
+def upload_file_to_notion(path):
+    create_resp = notion_request("POST", "/file_uploads", json={"filename": path.name})
+    upload_id, upload_url = create_resp["id"], create_resp["upload_url"]
+    with open(path, "rb") as f:
+        resp = requests.post(
+            upload_url,
+            headers={
+                "Authorization": f"Bearer {os.environ['NOTION_TOKEN']}",
+                "Notion-Version": NOTION_VERSION,
+            },
+            files={"file": (path.name, f, "image/png")},
+            timeout=60,
+        )
+    if resp.status_code >= 400:
+        raise RuntimeError(f"Notion file upload send failed {resp.status_code}: {resp.text}")
+    return upload_id
+
+
+def make_image_resolver(md_dir):
+    def resolve_image(alt, rel_path):
+        svg_path = (md_dir / rel_path).resolve()
+        if not svg_path.exists():
+            print(f"  [warn] image not found, skipping: {svg_path}")
+            return None
+        png_path = svg_to_png(svg_path) if svg_path.suffix.lower() == ".svg" else svg_path
+        upload_id = upload_file_to_notion(png_path)
+        return {
+            "object": "block",
+            "type": "image",
+            "image": {
+                "type": "file_upload",
+                "file_upload": {"id": upload_id},
+                "caption": parse_inline(alt) if alt else [],
+            },
+        }
+    return resolve_image
+
+
 def content_hash(text):
     salted = f"{PARSER_VERSION}:{text}"
     return hashlib.sha256(salted.encode("utf-8")).hexdigest()[:16]
@@ -185,7 +250,7 @@ def main():
 
             if not created:
                 clear_children(topic_page_id)
-            blocks = markdown_to_blocks(text)
+            blocks = markdown_to_blocks(text, resolve_image=make_image_resolver(md_file.parent))
             blocks.append(hash_marker_block(new_hash))
             append_blocks(topic_page_id, blocks)
             print(f"  [topic] {title} -> {topic_page_id} "
