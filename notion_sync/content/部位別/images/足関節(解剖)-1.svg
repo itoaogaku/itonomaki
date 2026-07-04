@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 350" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <rect width="480" height="350" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">足関節の外側靭帯(外側から見た模式図)</text>
+
+  <!-- lower leg bones -->
+  <rect x="200" y="50" width="50" height="150" rx="10" fill="#eadfc8" stroke="#c9c4b4" stroke-width="2"/>
+  <text x="225" y="130" text-anchor="middle" font-size="13" fill="#8a8578">腓骨</text>
+
+  <!-- talus -->
+  <ellipse cx="230" cy="230" rx="45" ry="30" fill="#eadfc8" stroke="#c9c4b4" stroke-width="2"/>
+  <text x="230" y="235" text-anchor="middle" font-size="13" fill="#8a8578">距骨</text>
+
+  <!-- calcaneus -->
+  <path d="M190,250 C180,270 175,300 195,320 L320,320 C335,310 335,290 320,275 L260,260 Z"
+        fill="#eadfc8" stroke="#c9c4b4" stroke-width="2"/>
+  <text x="270" y="295" text-anchor="middle" font-size="13" fill="#8a8578">踵骨</text>
+
+  <!-- ATFL: anterior talofibular -->
+  <path d="M225,190 C245,205 265,215 285,222" stroke="#2f7f6f" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <!-- CFL: calcaneofibular -->
+  <path d="M215,195 C205,225 200,255 200,280" stroke="#b8860b" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <!-- PTFL: posterior talofibular -->
+  <path d="M210,175 C195,195 185,210 178,225" stroke="#7a5ca8" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+  <text x="330" y="220" font-size="14" fill="#2f7f6f" font-weight="600">前距腓靭帯(ATFL)</text>
+  <text x="330" y="270" font-size="14" fill="#b8860b" font-weight="600">踵腓靭帯(CFL)</text>
+  <text x="70" y="180" font-size="14" fill="#7a5ca8" font-weight="600">後距腓靭帯(PTFL)</text>
+
+  <text x="20" y="340" font-size="13" fill="#8a8578">※内反捻挫では前距腓靭帯が最も損傷しやすい</text>
+</svg>

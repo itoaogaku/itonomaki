@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <rect width="480" height="560" fill="#ffffff"/>
+  <text x="240" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">腓腹筋とヒラメ筋(下腿を横から見た模式図)</text>
+
+  <text x="240" y="66" text-anchor="middle" font-size="14" fill="#8a8578">膝側</text>
+
+  <!-- lower leg outline -->
+  <path d="M170,80 C140,140 130,220 145,300 C155,360 165,410 185,450 C195,465 205,470 215,470 L300,470 C312,455 320,430 322,400 C326,350 320,270 300,180 C285,120 260,90 220,78 Z"
+        fill="none" stroke="#c9c4b4" stroke-width="3"/>
+
+  <!-- soleus (deep, peeking at sides/lower, drawn first so gastrocnemius overlaps) -->
+  <path d="M170,150 C148,200 140,270 150,330 C157,375 168,415 185,448 L215,448 C205,415 197,375 195,335 C193,280 198,220 210,170 C200,155 185,148 170,150 Z"
+        fill="#cbb8e0" fill-opacity="0.55" stroke="#7a5ca8" stroke-width="2"/>
+  <path d="M300,180 C315,225 322,280 318,330 C314,370 305,410 292,445 L268,445 C280,405 288,365 290,325 C292,270 285,220 272,178 C282,172 292,174 300,180 Z"
+        fill="#cbb8e0" fill-opacity="0.55" stroke="#7a5ca8" stroke-width="2"/>
+
+  <!-- gastrocnemius (superficial, two heads, the visible bulge) -->
+  <path d="M175,95 C150,140 142,200 152,255 C160,295 178,320 205,325 C232,320 248,295 254,255 C260,205 252,145 225,98 C210,88 190,88 175,95 Z"
+        fill="#a9d4c9" fill-opacity="0.65" stroke="#2f7f6f" stroke-width="2"/>
+
+  <!-- achilles tendon -->
+  <path d="M225,325 C232,370 232,410 228,445 L272,445 C266,410 264,370 260,325 Z"
+        fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b" stroke-width="2"/>
+
+  <text x="240" y="490" text-anchor="middle" font-size="14" fill="#8a8578">足首側(アキレス腱)</text>
+
+  <!-- legend -->
+  <g font-size="15">
+    <rect x="20" y="510" width="16" height="16" fill="#a9d4c9" fill-opacity="0.65" stroke="#2f7f6f"/>
+    <text x="42" y="523" fill="#2b2a27">腓腹筋(浅層・膨らみが見える)</text>
+
+    <rect x="20" y="533" width="16" height="16" fill="#cbb8e0" fill-opacity="0.55" stroke="#7a5ca8"/>
+    <text x="42" y="546" fill="#2b2a27">ヒラメ筋(深層・外からは見えにくい)</text>
+
+    <rect x="300" y="510" width="16" height="16" fill="#f4cf7a" fill-opacity="0.6" stroke="#b8860b"/>
+    <text x="322" y="523" fill="#2b2a27">アキレス腱</text>
+  </g>
+</svg>
