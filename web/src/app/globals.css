@@ -16,6 +16,12 @@
   --code-bg: #efece3;
   --code-fg: #4a4638;
   --shadow-color: 30 25 10;
+  --callout-info-bg: #f0fdfa;
+  --callout-info-border: rgba(94, 234, 212, 0.6);
+  --callout-info-fg: #042f2e;
+  --callout-warn-bg: #fffbeb;
+  --callout-warn-border: rgba(252, 211, 77, 0.6);
+  --callout-warn-fg: #451a03;
 }
 
 [data-theme="dark"] {
@@ -31,6 +37,12 @@
   --code-bg: #2a2818;
   --code-fg: #d8d3bd;
   --shadow-color: 0 0 0;
+  --callout-info-bg: rgba(45, 212, 191, 0.1);
+  --callout-info-border: rgba(45, 212, 191, 0.25);
+  --callout-info-fg: #ccfbf1;
+  --callout-warn-bg: rgba(251, 191, 36, 0.1);
+  --callout-warn-border: rgba(251, 191, 36, 0.25);
+  --callout-warn-fg: #fef3c7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +59,12 @@
     --code-bg: #2a2818;
     --code-fg: #d8d3bd;
     --shadow-color: 0 0 0;
+    --callout-info-bg: rgba(45, 212, 191, 0.1);
+    --callout-info-border: rgba(45, 212, 191, 0.25);
+    --callout-info-fg: #ccfbf1;
+    --callout-warn-bg: rgba(251, 191, 36, 0.1);
+    --callout-warn-border: rgba(251, 191, 36, 0.25);
+    --callout-warn-fg: #fef3c7;
   }
 }
 

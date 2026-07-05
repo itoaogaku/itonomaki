@@ -8,8 +8,8 @@ export function Callout({ icon, lines }: { icon: "💡" | "⚠️"; lines: Inlin
       className={
         "my-5 flex gap-3 rounded-xl border px-4 py-3.5 text-[0.975rem] leading-[1.85] " +
         (isWarning
-          ? "border-amber-300/60 bg-amber-50 text-amber-950 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-100"
-          : "border-teal-300/60 bg-teal-50 text-teal-950 dark:border-teal-400/25 dark:bg-teal-400/10 dark:text-teal-100")
+          ? "border-[var(--callout-warn-border)] bg-[var(--callout-warn-bg)] text-[var(--callout-warn-fg)]"
+          : "border-[var(--callout-info-border)] bg-[var(--callout-info-bg)] text-[var(--callout-info-fg)]")
       }
     >
       <span className="shrink-0 select-none text-lg leading-none" aria-hidden>
