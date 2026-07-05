@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="humG2" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">肩峰下インピンジメント(肩を横から見た模式図)</text>
+
+  <!-- acromion (bone shelf) -->
+  <path d="M120,110 C180,90 260,88 320,105 C335,109 340,120 332,130
+           C270,115 195,116 140,132 C125,128 116,118 120,110 Z"
+        fill="#f6e3c8" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="220" y="105" text-anchor="middle" font-size="13" fill="#8a7444">肩峰</text>
+
+  <!-- humeral head -->
+  <circle cx="255" cy="230" r="85" fill="url(#humG2)" stroke="#b8860b" stroke-width="2"/>
+  <text x="255" y="235" text-anchor="middle" font-size="13" fill="#7a5c1a" font-weight="600">上腕骨頭</text>
+
+  <!-- narrowed subacromial space + pinched tendon -->
+  <path d="M180,145 C210,152 250,155 290,148 C310,150 320,158 316,168
+           C280,162 220,160 190,168 C176,166 172,155 180,145 Z"
+        fill="#e79a9a" fill-opacity="0.75" stroke="#b3413e" stroke-width="2"/>
+  <text x="330" y="165" font-size="13" fill="#b3413e" font-weight="600">腱板が挟まれる</text>
+  <text x="335" y="183" font-size="12" fill="#8a8578">(肩峰下スペース)</text>
+
+  <!-- upward arrow: humeral head migrating up -->
+  <path d="M255,175 L255,150" stroke="#8a68b8" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M255,150 l-7,10 M255,150 l7,10" stroke="#8a68b8" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <text x="60" y="230" font-size="13" fill="#7a5ca8" font-weight="600">腱板の筋力低下で</text>
+  <text x="60" y="248" font-size="13" fill="#7a5ca8" font-weight="600">骨頭がやや上方へ</text>
+
+  <text x="20" y="390" font-size="13" fill="#8a8578">※本来はローテーターカフが骨頭を中心に安定させて三角筋と協調する</text>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinFoot2" cx="50%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="380" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">モートン神経腫(足を裏側から見た模式図)</text>
+
+  <!-- foot silhouette (top-down, toes at bottom) -->
+  <path d="M170,50 C140,55 120,80 115,120
+           C110,160 120,190 130,220
+           C120,240 112,260 118,280
+           L362,280
+           C368,260 360,240 350,220
+           C360,190 370,160 365,120
+           C360,80 340,55 310,50
+           C260,42 220,42 170,50 Z"
+        fill="url(#skinFoot2)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- toes -->
+  <g fill="url(#skinFoot2)" stroke="#d8c3a5" stroke-width="2">
+    <ellipse cx="135" cy="300" rx="14" ry="24"/>
+    <ellipse cx="175" cy="308" rx="13" ry="26"/>
+    <ellipse cx="215" cy="312" rx="12" ry="28"/>
+    <ellipse cx="253" cy="308" rx="12" ry="26"/>
+    <ellipse cx="288" cy="298" rx="12" ry="22"/>
+  </g>
+
+  <!-- deep transverse metatarsal ligament -->
+  <line x1="135" y1="270" x2="288" y2="270" stroke="#c9b078" stroke-width="6" stroke-linecap="round"/>
+  <text x="330" y="272" font-size="12" fill="#8a7444">深横中足靱帯</text>
+
+  <!-- nerve highlight between 3rd/4th toes -->
+  <path d="M240,260 C238,250 236,240 236,232" stroke="#f4d35e" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="238" cy="270" r="15" fill="#e79a9a" fill-opacity="0.7" stroke="#b3413e" stroke-width="2"/>
+  <text x="330" y="240" font-size="13" fill="#a68a1f" font-weight="600">神経(第3・4指間)</text>
+  <text x="330" y="258" font-size="12" fill="#8a8578">が最も肥厚しやすい</text>
+
+  <text x="20" y="330" font-size="13" fill="#8a8578">※第3・4指の神経は2本が合流して太く、圧迫を受けやすい</text>
+</svg>

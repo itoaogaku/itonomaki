@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <linearGradient id="boneK" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6ecd8"/>
+      <stop offset="100%" stop-color="#e2cfa6"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="380" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">変形性膝関節症(関節の断面模式図)</text>
+
+  <!-- healthy panel -->
+  <g>
+    <text x="120" y="60" text-anchor="middle" font-size="14" fill="#8a8578">健常な関節</text>
+    <path d="M60,70 C56,100 56,120 60,140 L180,140 C184,120 184,100 180,70 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="2"/>
+    <rect x="60" y="140" width="120" height="10" rx="4" fill="#a9d4c9" stroke="#4a9c89" stroke-width="1.5"/>
+    <rect x="60" y="150" width="120" height="10" rx="4" fill="#a9d4c9" stroke="#4a9c89" stroke-width="1.5"/>
+    <path d="M60,160 C56,180 56,200 60,230 L180,230 C184,200 184,180 180,160 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="2"/>
+    <text x="120" y="255" text-anchor="middle" font-size="12" fill="#4a9c89">軟骨(厚い)がクッションになる</text>
+  </g>
+
+  <!-- OA panel -->
+  <g>
+    <text x="360" y="60" text-anchor="middle" font-size="14" fill="#8a8578">変形性膝関節症</text>
+    <path d="M300,70 C296,100 296,120 300,138 L420,138 C424,120 424,100 420,70 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="2"/>
+    <!-- bone spurs -->
+    <path d="M296,110 C286,108 280,116 284,124 C290,120 296,118 298,116 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="1.5"/>
+    <path d="M424,110 C434,108 440,116 436,124 C430,120 424,118 422,116 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="1.5"/>
+    <rect x="300" y="138" width="120" height="4" rx="2" fill="#e79a9a" stroke="#b3413e" stroke-width="1.5"/>
+    <rect x="300" y="147" width="120" height="4" rx="2" fill="#e79a9a" stroke="#b3413e" stroke-width="1.5"/>
+    <path d="M300,155 C296,175 296,195 300,222 L420,222 C424,195 424,175 420,155 Z" fill="url(#boneK)" stroke="#c9b078" stroke-width="2"/>
+    <text x="360" y="255" text-anchor="middle" font-size="12" fill="#b3413e">軟骨がすり減り骨棘ができる</text>
+  </g>
+
+  <text x="20" y="310" font-size="13" fill="#8a8578">※軟骨は血管を持たず、関節を動かすことで関節液から栄養を受け取る</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinPs" cx="40%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="psoas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">腸腰筋(体幹を横から見た模式図)</text>
+
+  <!-- torso/pelvis/thigh silhouette (side view) -->
+  <path d="M180,60 C150,80 138,120 145,160
+           C138,200 132,250 140,300
+           C120,330 100,370 105,410
+           L165,430
+           C175,395 190,360 210,335
+           C235,345 262,345 285,332
+           C300,360 312,395 318,430
+           L378,415
+           C378,375 362,335 340,305
+           C348,255 342,205 330,160
+           C334,120 320,80 290,62
+           C255,48 215,48 180,60 Z"
+        fill="url(#skinPs)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- lumbar spine hint -->
+  <path d="M255,90 C265,140 265,190 255,230 C250,250 248,270 252,290"
+        fill="none" stroke="#c9b078" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 6"/>
+  <text x="290" y="150" font-size="13" fill="#8a7444">腰椎</text>
+
+  <!-- iliopsoas: from lumbar spine/pelvis to femur -->
+  <path d="M245,180 C238,220 232,255 230,285
+           C245,310 262,325 280,330
+           C270,300 260,270 258,240
+           C256,215 252,195 245,180 Z"
+        fill="url(#psoas)" stroke="#b8860b" stroke-width="2"/>
+  <text x="150" y="220" font-size="14" fill="#8a6d1f" font-weight="600">腸腰筋</text>
+  <text x="140" y="238" font-size="12" fill="#8a8578">(大腰筋+腸骨筋)</text>
+
+  <!-- pelvis tilt arrow -->
+  <path d="M150,300 C170,290 195,288 215,295" stroke="#b3413e" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M215,295 l-10,-6 M215,295 l-3,10" stroke="#b3413e" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="80" y="325" font-size="13" fill="#b3413e" font-weight="600">骨盤が過前傾</text>
+
+  <text x="20" y="450" font-size="13" fill="#8a8578">※拘縮すると寛骨と大腿骨の距離が縮み、骨盤が前に傾いて腰椎の前弯が強まる</text>
+</svg>

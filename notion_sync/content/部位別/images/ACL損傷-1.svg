@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <linearGradient id="femurA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6ecd8"/>
+      <stop offset="100%" stop-color="#e2cfa6"/>
+    </linearGradient>
+    <linearGradient id="aclG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#c85f5a"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">前十字靭帯(ACL)(膝関節を前面から見た模式図)</text>
+
+  <!-- femur -->
+  <path d="M175,50 C168,90 168,130 175,165 C205,175 235,175 265,165 C272,130 272,90 265,50 C235,40 205,40 175,50 Z"
+        fill="url(#femurA)" stroke="#c9b078" stroke-width="2"/>
+  <text x="220" y="100" text-anchor="middle" font-size="13" fill="#8a7444">大腿骨</text>
+
+  <!-- tibia -->
+  <path d="M175,235 C168,280 168,340 175,390 C205,400 235,400 265,390 C272,340 272,280 265,235 C235,225 205,225 175,235 Z"
+        fill="url(#femurA)" stroke="#c9b078" stroke-width="2"/>
+  <text x="220" y="320" text-anchor="middle" font-size="13" fill="#8a7444">脛骨</text>
+
+  <!-- ACL: femur (posterior/lateral) to tibia (anterior/medial) -->
+  <path d="M255,160 C240,185 220,205 200,225 C190,235 185,245 185,235 C185,215 195,195 210,178 C225,165 240,160 255,160 Z"
+        fill="url(#aclG)" stroke="#a3403c" stroke-width="2"/>
+  <text x="310" y="200" font-size="14" fill="#a3403c" font-weight="600">前十字靭帯</text>
+  <text x="320" y="218" font-size="12" fill="#8a8578">(ACL)</text>
+
+  <!-- valgus + rotation illustration inset -->
+  <g transform="translate(60,300)">
+    <text x="60" y="0" text-anchor="middle" font-size="13" fill="#8a8578">受傷しやすい肢位</text>
+    <path d="M45,15 L30,90" stroke="#c9b078" stroke-width="10" stroke-linecap="round"/>
+    <path d="M30,90 L70,150" stroke="#c9b078" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="30" cy="90" r="8" fill="#c85f5a"/>
+    <text x="90" y="95" font-size="12" fill="#b3413e">膝が内側に入る(外反)</text>
+  </g>
+
+  <text x="20" y="440" font-size="13" fill="#8a8578">※膝の外反+下腿の外旋+膝関節屈曲+下腿前傾が重なると損傷しやすい</text>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinFoot" cx="40%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="fascia" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="340" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">足底筋膜(足を内側から見た模式図)</text>
+
+  <!-- foot silhouette -->
+  <path d="M60,190 C55,165 65,145 90,140 C160,128 260,120 340,138
+           C380,147 410,165 415,190
+           C418,205 410,218 392,222
+           L90,222
+           C72,220 62,208 60,190 Z"
+        fill="url(#skinFoot)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- heel bone hint -->
+  <ellipse cx="90" cy="180" rx="30" ry="34" fill="#f6e3c8" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="90" y="185" text-anchor="middle" font-size="12" fill="#8a7444">踵骨</text>
+
+  <!-- plantar fascia band -->
+  <path d="M78,205 C150,222 260,222 360,205" fill="none" stroke="url(#fascia)" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- pain point at heel attachment -->
+  <circle cx="80" cy="207" r="14" fill="#e79a9a" fill-opacity="0.7" stroke="#b3413e" stroke-width="2"/>
+  <text x="80" y="255" text-anchor="middle" font-size="13" fill="#b3413e" font-weight="600">最も痛みやすい部位</text>
+  <text x="80" y="272" text-anchor="middle" font-size="12" fill="#8a8578">(踵骨前内方の付着部)</text>
+
+  <text x="380" y="140" font-size="13" fill="#8a6d1f" font-weight="600">足底筋膜</text>
+  <text x="360" y="230" font-size="12" fill="#8a8578">つま先側へ</text>
+
+  <text x="20" y="310" font-size="13" fill="#8a8578">※進行すると付着部にトゲ状の骨(骨棘)ができることがある</text>
+</svg>
