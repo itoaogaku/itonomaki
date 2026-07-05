@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinAch" cx="40%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="achG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">アキレス腱(下腿を後ろから見た模式図)</text>
+  <text x="240" y="62" text-anchor="middle" font-size="13" fill="#8a8578">膝側</text>
+
+  <!-- lower leg silhouette -->
+  <path d="M175,75 C140,120 130,190 145,255
+           C152,295 160,335 178,375
+           C192,398 208,410 224,412
+           L296,412
+           C312,395 322,368 320,340
+           C316,295 306,225 314,150
+           C300,100 264,72 220,68
+           C204,66 188,68 175,75 Z"
+        fill="url(#skinAch)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- gastrocnemius heads (medial + lateral bulges) -->
+  <path d="M180,90 C158,130 150,180 158,225 C165,255 178,270 195,272 C185,240 182,195 190,150 C195,125 195,105 180,90 Z"
+        fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f" stroke-width="2"/>
+  <path d="M305,150 C312,190 310,230 300,265 C293,285 282,295 270,296 C282,255 288,205 282,160 C280,140 285,120 295,105 C300,120 302,135 305,150 Z"
+        fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f" stroke-width="2"/>
+
+  <!-- achilles tendon with twist -->
+  <path d="M198,275 C210,305 218,330 222,355
+           C224,368 236,375 245,375
+           C254,375 264,368 268,355
+           C276,325 282,300 292,270"
+        fill="none" stroke="url(#achG)" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- twist zone highlight (2-5cm above insertion) -->
+  <ellipse cx="245" cy="345" rx="30" ry="16" fill="#e79a9a" fill-opacity="0.55" stroke="#b3413e" stroke-width="2"/>
+  <text x="330" y="340" font-size="13" fill="#b3413e" font-weight="600">ねじれが生じる部位</text>
+  <text x="345" y="358" font-size="12" fill="#8a8578">(付着部の2〜5cm上)</text>
+
+  <text x="150" y="400" text-anchor="middle" font-size="12" fill="#8a7444">ヒラメ筋→内側に付着</text>
+  <text x="340" y="400" text-anchor="middle" font-size="12" fill="#8a7444">腓腹筋→外側に付着</text>
+
+  <text x="20" y="440" font-size="13" fill="#8a8578">※ヒラメ筋は腱の内側線維、腓腹筋は外側線維にそれぞれ停止する</text>
+</svg>

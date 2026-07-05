@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinQl" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="qlG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">腰方形筋(背中を後ろから見た模式図)</text>
+
+  <!-- torso back silhouette -->
+  <path d="M150,55 C118,75 102,115 108,160
+           C100,220 106,290 125,355
+           C138,395 165,425 200,432
+           L280,432
+           C315,425 342,395 355,355
+           C374,290 380,220 372,160
+           C378,115 362,75 330,55
+           C280,38 180,38 150,55 Z"
+        fill="url(#skinQl)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- spine + rib cage hint -->
+  <line x1="240" y1="65" x2="240" y2="425" stroke="#d8c3a5" stroke-width="2" stroke-dasharray="3 5"/>
+  <path d="M170,110 C200,122 280,122 310,110" fill="none" stroke="#d8c3a5" stroke-width="2" stroke-dasharray="3 5"/>
+  <text x="240" y="98" text-anchor="middle" font-size="12" fill="#8a8578">肋骨下端</text>
+
+  <!-- iliac crest hint -->
+  <path d="M160,300 C190,312 290,312 320,300" fill="none" stroke="#d8c3a5" stroke-width="2" stroke-dasharray="3 5"/>
+  <text x="240" y="335" text-anchor="middle" font-size="12" fill="#8a8578">腸骨稜</text>
+
+  <!-- quadratus lumborum: iliac crest to 12th rib / lumbar transverse processes -->
+  <path d="M195,120 C185,160 180,210 182,260 C184,285 190,300 205,305
+           C220,300 230,285 232,260 C235,210 232,160 225,120
+           C215,112 205,112 195,120 Z"
+        fill="url(#qlG)" stroke="#b8860b" stroke-width="2"/>
+  <path d="M285,120 C295,160 300,210 298,260 C296,285 290,300 275,305
+           C260,300 250,285 248,260 C245,210 248,160 255,120
+           C265,112 275,112 285,120 Z"
+        fill="url(#qlG)" stroke="#b8860b" stroke-width="2"/>
+
+  <text x="130" y="200" font-size="14" fill="#8a6d1f" font-weight="600">腰方形筋</text>
+  <text x="330" y="200" font-size="14" fill="#8a6d1f" font-weight="600">腰方形筋</text>
+
+  <text x="20" y="460" font-size="13" fill="#8a8578">※骨盤(腸骨稜)から肋骨・腰椎横突起まで伸び、体幹を起こす力を生む</text>
+</svg>

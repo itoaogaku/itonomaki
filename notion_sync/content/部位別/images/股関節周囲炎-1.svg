@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="boneHip" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">股関節包の層構造(断面模式図)</text>
+
+  <!-- concentric layers, outer to inner -->
+  <circle cx="240" cy="220" r="150" fill="#c9a8dd" fill-opacity="0.35" stroke="#8a68b8" stroke-width="2"/>
+  <circle cx="240" cy="220" r="120" fill="#f0bf5e" fill-opacity="0.4" stroke="#b8860b" stroke-width="2"/>
+  <circle cx="240" cy="220" r="90" fill="#a9d4c9" fill-opacity="0.5" stroke="#2f7f6f" stroke-width="2"/>
+  <circle cx="240" cy="220" r="60" fill="url(#boneHip)" stroke="#b8860b" stroke-width="2"/>
+  <text x="240" y="225" text-anchor="middle" font-size="13" fill="#7a5c1a" font-weight="600">骨</text>
+
+  <text x="240" y="168" text-anchor="middle" font-size="12" fill="#2f7f6f" font-weight="600">滑膜</text>
+  <text x="240" y="115" text-anchor="middle" font-size="12" fill="#8a6d1f" font-weight="600">線維滑液包</text>
+  <text x="240" y="80" text-anchor="middle" font-size="12" fill="#7a5ca8" font-weight="600">靭帯</text>
+  <text x="240" y="382" text-anchor="middle" font-size="13" fill="#8a8578">(さらに外側を筋肉が覆う)</text>
+
+  <text x="20" y="405" font-size="13" fill="#8a8578">※痛みを感じるのは主に滑膜。構造は骨→滑膜→線維滑液包→靭帯→筋肉の順</text>
+</svg>

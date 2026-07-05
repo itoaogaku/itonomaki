@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinWing" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">翼状肩甲骨(背中を後ろから見た模式図)</text>
+
+  <!-- torso back silhouette -->
+  <path d="M140,60 C110,80 95,120 100,165
+           C95,220 100,280 115,335
+           C125,365 150,385 180,392
+           L300,392
+           C330,385 355,365 365,335
+           C380,280 385,220 380,165
+           C385,120 370,80 340,60
+           C300,44 180,44 140,60 Z"
+        fill="url(#skinWing)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- spine hint -->
+  <line x1="240" y1="70" x2="240" y2="380" stroke="#d8c3a5" stroke-width="2" stroke-dasharray="3 5"/>
+
+  <!-- normal scapula (left/viewer's left = flat against ribcage) -->
+  <path d="M150,110 C140,160 138,210 150,255 C165,275 185,282 200,278
+           L200,120 C185,108 165,105 150,110 Z"
+        fill="#f6e3c8" fill-opacity="0.85" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="145" y="300" font-size="12" fill="#8a8578">正常(胸郭に密着)</text>
+
+  <!-- winged scapula (right side, lifted, shown offset/shadowed to suggest raised edge) -->
+  <path d="M290,105 C275,100 258,102 248,112 L262,270 C280,278 300,272 312,255
+           C320,210 318,160 305,120 Z"
+        fill="#e79a9a" fill-opacity="0.5" stroke="#b3413e" stroke-width="2" stroke-dasharray="5 3"/>
+  <path d="M280,110 C268,105 255,108 248,118 L258,265 C273,272 288,266 298,252
+           C305,210 303,162 292,125 Z"
+        fill="#f6e3c8" stroke="#d8c3a5" stroke-width="2"/>
+  <text x="330" y="300" font-size="12" fill="#b3413e" font-weight="600">翼状(内側縁が浮く)</text>
+
+  <text x="20" y="415" font-size="13" fill="#8a8578">※前鋸筋の筋力低下・機能不全で肩甲骨を胸郭に引き寄せられなくなる</text>
+</svg>

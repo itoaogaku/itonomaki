@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinNeck" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="380" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">頸椎のカーブ(横から見た模式図)</text>
+
+  <!-- normal panel -->
+  <g>
+    <text x="120" y="60" text-anchor="middle" font-size="14" fill="#8a8578">正常な前弯</text>
+    <circle cx="150" cy="90" r="30" fill="url(#skinNeck)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M150,118 C130,150 122,190 130,225 L200,235 C205,195 200,150 185,120 Z"
+          fill="url(#skinNeck)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M148,120 C132,150 126,185 133,220" fill="none" stroke="#2f7f6f" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="225" x2="220" y2="235" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="140" y="270" text-anchor="middle" font-size="12" fill="#2f7f6f">頭の下に自然なすき間</text>
+  </g>
+
+  <!-- straight neck panel -->
+  <g>
+    <text x="360" y="60" text-anchor="middle" font-size="14" fill="#8a8578">ストレートネック</text>
+    <circle cx="410" cy="90" r="30" fill="url(#skinNeck)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M410,118 C400,150 398,190 400,225 L330,235 C328,195 335,150 350,120 Z"
+          fill="url(#skinNeck)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M408,120 C400,150 399,185 401,220" fill="none" stroke="#c85f5a" stroke-width="6" stroke-linecap="round"/>
+    <line x1="300" y1="225" x2="440" y2="235" stroke="#c9c4b4" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="370" y="270" text-anchor="middle" font-size="12" fill="#b3413e">首の下にすき間がない</text>
+  </g>
+
+  <text x="20" y="330" font-size="13" fill="#8a8578">※横向きで脱力した状態で確認する。緊張による代償が働きにくいため</text>
+</svg>

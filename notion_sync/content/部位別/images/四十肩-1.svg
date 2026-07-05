@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="humG3" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fbe4a8"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="380" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">肩関節包(フローズンショルダー)</text>
+
+  <!-- normal panel -->
+  <g>
+    <text x="120" y="60" text-anchor="middle" font-size="14" fill="#8a8578">健常な関節包</text>
+    <circle cx="120" cy="150" r="65" fill="url(#humG3)" stroke="#b8860b" stroke-width="2"/>
+    <circle cx="120" cy="150" r="80" fill="none" stroke="#a9d4c9" stroke-width="8" stroke-dasharray="2 1"/>
+    <text x="120" y="155" text-anchor="middle" font-size="12" fill="#7a5c1a">上腕骨頭</text>
+    <text x="120" y="255" text-anchor="middle" font-size="12" fill="#2f7f6f">関節包にゆとりがあり</text>
+    <text x="120" y="272" text-anchor="middle" font-size="12" fill="#2f7f6f">大きく動かせる</text>
+  </g>
+
+  <!-- frozen panel -->
+  <g>
+    <text x="360" y="60" text-anchor="middle" font-size="14" fill="#8a8578">フローズンショルダー</text>
+    <circle cx="360" cy="150" r="65" fill="url(#humG3)" stroke="#b8860b" stroke-width="2"/>
+    <circle cx="360" cy="150" r="70" fill="none" stroke="#c85f5a" stroke-width="10"/>
+    <text x="360" y="155" text-anchor="middle" font-size="12" fill="#7a5c1a">上腕骨頭</text>
+    <text x="360" y="255" text-anchor="middle" font-size="12" fill="#b3413e">関節包が炎症で肥厚・</text>
+    <text x="360" y="272" text-anchor="middle" font-size="12" fill="#b3413e">線維化し可動域が制限</text>
+  </g>
+
+  <text x="20" y="330" font-size="13" fill="#8a8578">※炎症期→拘縮期(硬さのピーク)→回復期の順で経過することが多い</text>
+</svg>
