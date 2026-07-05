@@ -74,10 +74,31 @@ export function getSection(sectionSlug: string): SectionSummary | undefined {
   return getSections().find((s) => s.slug === sectionSlug);
 }
 
+/**
+ * Topics pinned to the front of a section's list, in this order, ahead of
+ * the rest of that section's topics (which stay in alphabetical order).
+ */
+const PINNED_TOPICS: Record<string, string[]> = {
+  フィジカル: ["大会準備"],
+};
+
+function sortTopics(sectionSlug: string, fileNames: string[]): string[] {
+  const pinned = PINNED_TOPICS[sectionSlug] ?? [];
+  const slugOf = (fileName: string) => fileName.replace(/\.md$/, "");
+  return [...fileNames].sort((a, b) => {
+    const ai = pinned.indexOf(slugOf(a));
+    const bi = pinned.indexOf(slugOf(b));
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.localeCompare(b, "ja");
+  });
+}
+
 export function getTopics(sectionSlug: string): TopicSummary[] {
   const dir = path.join(CONTENT_DIR, sectionSlug);
   if (!fs.existsSync(dir)) return [];
-  const files = readDirSorted(dir).filter((f) => f.endsWith(".md"));
+  const files = sortTopics(sectionSlug, readDirSorted(dir).filter((f) => f.endsWith(".md")));
   return files.map((file) => {
     const slug = file.replace(/\.md$/, "");
     return { slug, title: slug };
