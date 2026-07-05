@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinGroin" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">鼠径部に密集する構造(骨盤を前面から見た模式図)</text>
+
+  <!-- pelvis/groin silhouette -->
+  <path d="M110,60 C90,90 82,130 90,165
+           C80,200 85,240 105,270
+           L160,380 L200,380 L215,280
+           C225,260 230,240 230,220
+           C230,240 235,260 245,280
+           L260,380 L300,380 L355,270
+           C375,240 380,200 370,165
+           C378,130 370,90 350,60
+           C300,42 160,42 110,60 Z"
+        fill="url(#skinGroin)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- pubic symphysis -->
+  <circle cx="230" cy="230" r="14" fill="#f6e3c8" stroke="#c9b078" stroke-width="2"/>
+  <text x="230" y="270" text-anchor="middle" font-size="11" fill="#8a7444">恥骨結合</text>
+
+  <!-- hip joint markers -->
+  <circle cx="130" cy="185" r="18" fill="#f0bf5e" fill-opacity="0.6" stroke="#b8860b" stroke-width="2"/>
+  <circle cx="330" cy="185" r="18" fill="#f0bf5e" fill-opacity="0.6" stroke="#b8860b" stroke-width="2"/>
+  <text x="130" y="150" text-anchor="middle" font-size="12" fill="#8a6d1f" font-weight="600">股関節</text>
+
+  <!-- inguinal canal region -->
+  <path d="M150,220 C170,230 190,235 210,232" stroke="#7a5ca8" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <text x="70" y="215" font-size="12" fill="#7a5ca8" font-weight="600">鼠径管</text>
+  <text x="60" y="230" font-size="11" fill="#8a8578">(ヘルニアに関連)</text>
+
+  <!-- adductors -->
+  <path d="M195,260 C185,300 178,340 180,375" stroke="#4a9c89" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <path d="M265,260 C275,300 282,340 280,375" stroke="#4a9c89" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <text x="150" y="330" font-size="12" fill="#2f7f6f" font-weight="600">内転筋群</text>
+
+  <!-- femoral vessels/nerve -->
+  <circle cx="345" cy="225" r="8" fill="#e79a9a" stroke="#b3413e" stroke-width="1.5"/>
+  <text x="360" y="228" font-size="11" fill="#b3413e">大腿動静脈・神経</text>
+
+  <text x="20" y="405" font-size="13" fill="#8a8578">※狭い範囲に複数の組織が密集し、関連痛で原因の特定が難しい</text>
+</svg>

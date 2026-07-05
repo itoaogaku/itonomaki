@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinKnee" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+    <linearGradient id="quadT" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0bf5e"/>
+      <stop offset="100%" stop-color="#d99c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="480" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">膝蓋腱(膝を横から見た模式図)</text>
+  <text x="240" y="62" text-anchor="middle" font-size="13" fill="#8a8578">大腿側</text>
+
+  <!-- leg silhouette (side view, thigh to shin) -->
+  <path d="M175,75 C145,110 132,155 140,200
+           C132,240 128,285 138,325
+           C150,360 168,388 192,405
+           L300,405
+           C310,375 314,340 308,305
+           C316,260 318,210 306,165
+           C310,120 290,85 255,72
+           C228,60 198,62 175,75 Z"
+        fill="url(#skinKnee)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- quadriceps tendon (above patella) -->
+  <path d="M195,90 C205,140 212,190 216,235 L262,235 C266,190 272,140 282,95"
+        fill="none" stroke="url(#quadT)" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- patella -->
+  <ellipse cx="240" cy="248" rx="30" ry="20" fill="#f6e3c8" stroke="#c9b078" stroke-width="2"/>
+  <text x="240" y="253" text-anchor="middle" font-size="11" fill="#8a7444">膝蓋骨</text>
+
+  <!-- patellar tendon (below patella, the highlighted one) -->
+  <path d="M225,268 C222,290 220,310 222,330 L258,330 C260,310 258,290 255,268 Z"
+        fill="#e79a9a" stroke="#b3413e" stroke-width="2.5"/>
+  <text x="330" y="300" font-size="14" fill="#b3413e" font-weight="600">膝蓋腱</text>
+  <text x="325" y="318" font-size="12" fill="#8a8578">(炎症好発部位)</text>
+
+  <!-- tibial tuberosity -->
+  <text x="240" y="360" text-anchor="middle" font-size="12" fill="#8a7444">脛骨粗面へ付着</text>
+
+  <text x="20" y="440" font-size="13" fill="#8a8578">※重心が後ろに寄ると大腿四頭筋・膝蓋腱への負担が増える</text>
+</svg>

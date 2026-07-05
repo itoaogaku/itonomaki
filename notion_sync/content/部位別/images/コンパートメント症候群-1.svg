@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <linearGradient id="boneComp" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6ecd8"/>
+      <stop offset="100%" stop-color="#e2cfa6"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">下腿の4つのコンパートメント(断面模式図)</text>
+
+  <!-- outer skin outline -->
+  <circle cx="240" cy="220" r="150" fill="#fbead9" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- tibia + fibula bones -->
+  <ellipse cx="205" cy="230" rx="38" ry="48" fill="url(#boneComp)" stroke="#c9b078" stroke-width="2"/>
+  <circle cx="300" cy="255" r="18" fill="url(#boneComp)" stroke="#c9b078" stroke-width="2"/>
+  <text x="205" y="235" text-anchor="middle" font-size="12" fill="#8a7444">脛骨</text>
+  <text x="300" y="259" text-anchor="middle" font-size="10" fill="#8a7444">腓骨</text>
+
+  <!-- 4 compartments as wedge regions divided by fascial septa -->
+  <path d="M240,220 L240,90 A130,130 0 0,1 355,175 Z" fill="#a9d4c9" fill-opacity="0.55" stroke="#2f7f6f" stroke-width="2"/>
+  <path d="M240,220 L355,175 A130,130 0 0,1 330,330 Z" fill="#e79a9a" fill-opacity="0.5" stroke="#b3413e" stroke-width="2"/>
+  <path d="M240,220 L330,330 A130,130 0 0,1 150,345 Z" fill="#c9a8dd" fill-opacity="0.45" stroke="#8a68b8" stroke-width="2"/>
+  <path d="M240,220 L150,345 A130,130 0 0,1 240,90 Z" fill="#f0bf5e" fill-opacity="0.45" stroke="#b8860b" stroke-width="2"/>
+
+  <text x="300" y="120" font-size="13" fill="#2f7f6f" font-weight="600">前方区画</text>
+  <text x="345" y="245" font-size="13" fill="#b3413e" font-weight="600">外側区画</text>
+  <text x="240" y="360" text-anchor="middle" font-size="13" fill="#7a5ca8" font-weight="600">浅後方区画</text>
+  <text x="130" y="150" font-size="13" fill="#8a6d1f" font-weight="600">深後方区画</text>
+
+  <text x="20" y="400" font-size="13" fill="#8a8578">※各区画は伸びにくい筋膜で囲まれ、内圧が上がると血管・神経を圧迫する</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinPron" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="380" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">足関節を後ろから見た模式図(正常 / 過回内)</text>
+
+  <!-- normal panel -->
+  <g>
+    <text x="120" y="60" text-anchor="middle" font-size="14" fill="#8a8578">正常</text>
+    <path d="M95,75 C85,110 82,150 88,185 L152,185 C158,150 155,110 145,75 Z" fill="url(#skinPron)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M85,185 C80,205 82,225 95,235 L145,235 C158,225 160,205 155,185 Z" fill="url(#skinPron)" stroke="#d8c3a5" stroke-width="2"/>
+    <line x1="120" y1="80" x2="120" y2="230" stroke="#2f7f6f" stroke-width="4" stroke-dasharray="3 3"/>
+    <line x1="60" y1="240" x2="180" y2="240" stroke="#c9c4b4" stroke-width="2"/>
+    <text x="120" y="270" text-anchor="middle" font-size="12" fill="#2f7f6f">アキレス腱が垂直</text>
+  </g>
+
+  <!-- overpronation panel -->
+  <g>
+    <text x="360" y="60" text-anchor="middle" font-size="14" fill="#8a8578">過回内(オーバープロネーション)</text>
+    <path d="M335,75 C325,110 322,150 328,183 L392,190 C400,155 396,112 385,76 Z" fill="url(#skinPron)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M328,183 C324,203 330,222 348,233 L400,225 C410,212 408,195 398,188 Z" fill="url(#skinPron)" stroke="#d8c3a5" stroke-width="2"/>
+    <path d="M360,80 C352,140 348,190 358,228" fill="none" stroke="#c85f5a" stroke-width="4" stroke-dasharray="3 3"/>
+    <line x1="300" y1="240" x2="420" y2="240" stroke="#c9c4b4" stroke-width="2"/>
+    <text x="360" y="270" text-anchor="middle" font-size="12" fill="#b3413e">アキレス腱が内側に傾く</text>
+  </g>
+
+  <text x="20" y="330" font-size="13" fill="#8a8578">※前脛骨筋・後脛骨筋の虚弱や扁平足でアーチが落ち込み過回内が起こる</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+  <defs>
+    <radialGradient id="skinSi" cx="42%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#fbead9"/>
+      <stop offset="100%" stop-color="#eccbac"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="420" fill="#ffffff"/>
+  <text x="240" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2a27">仙腸関節(骨盤を背面から見た模式図)</text>
+
+  <!-- pelvis back silhouette -->
+  <path d="M120,70 C95,95 85,135 92,175
+           C82,210 88,250 108,280
+           L150,320 L190,320 L175,240
+           C170,210 168,180 175,150
+           C185,180 195,210 190,240
+           C195,180 205,150 240,150
+           C275,150 285,180 290,240
+           C285,210 295,180 305,150
+           C312,180 310,210 305,240
+           L290,320 L330,320 L372,280
+           C392,250 398,210 388,175
+           C395,135 385,95 360,70
+           C310,50 170,50 120,70 Z"
+        fill="url(#skinSi)" stroke="#d8c3a5" stroke-width="3"/>
+
+  <!-- sacrum -->
+  <path d="M205,95 C225,88 255,88 275,95 C280,140 278,185 268,220
+           C255,230 225,230 212,220 C202,185 200,140 205,95 Z"
+        fill="#f6e3c8" stroke="#c9b078" stroke-width="2"/>
+  <text x="240" y="150" text-anchor="middle" font-size="13" fill="#8a7444">仙骨</text>
+
+  <!-- SI joints (both sides) -->
+  <path d="M205,100 C200,140 200,180 210,218" stroke="#b3413e" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M275,100 C280,140 280,180 270,218" stroke="#b3413e" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <text x="120" y="160" font-size="13" fill="#b3413e" font-weight="600">仙腸関節</text>
+
+  <!-- surrounding stabilizing muscles (force closure) -->
+  <path d="M150,110 C170,150 175,190 165,225" stroke="#4a9c89" stroke-width="6" stroke-linecap="round" fill="none" stroke-opacity="0.75"/>
+  <path d="M330,110 C310,150 305,190 315,225" stroke="#4a9c89" stroke-width="6" stroke-linecap="round" fill="none" stroke-opacity="0.75"/>
+  <text x="300" y="150" font-size="12" fill="#2f7f6f" font-weight="600">多裂筋・大殿筋など</text>
+  <text x="300" y="167" font-size="11" fill="#2f7f6f" font-weight="600">(フォースクロージャー)</text>
+
+  <text x="20" y="400" font-size="13" fill="#8a8578">※関節形状のかみ合わせ+周囲筋の張力の2つで安定性を保つ</text>
+</svg>
