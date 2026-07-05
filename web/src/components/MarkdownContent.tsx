@@ -100,13 +100,13 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
             case "table":
               return (
                 <div key={i} className="my-5 overflow-x-auto rounded-lg border border-[var(--border)]">
-                  <table className="w-full border-collapse text-sm">
+                  <table className="w-full min-w-[960px] border-collapse text-sm">
                     <thead>
                       <tr className="bg-[var(--surface-2)]">
                         {block.header.map((cell, ci) => (
                           <th
                             key={ci}
-                            className="border-b border-[var(--border)] px-3 py-2 text-left font-semibold text-[var(--fg-strong)]"
+                            className="whitespace-nowrap border-b border-[var(--border)] px-3 py-2 text-left font-semibold text-[var(--fg-strong)]"
                           >
                             <Inline tokens={cell} />
                           </th>
