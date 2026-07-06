@@ -47,17 +47,19 @@ RENAMES = {
     ("フィジカル", "痛み"): ["痛み【アスリート】", "痛み【一般】", "痛み【心因性】"],
 }
 
-# Maps (old_section, title) -> new_section, for topics whose local file moved
-# to a different section's directory. The new section finds/creates the page
-# normally via its own directory scan (see main()); this only archives the
-# leftover page under the OLD section so it doesn't stay behind as an
-# orphaned duplicate. Safe to remove an entry once applied (subsequent runs
-# find no old page to archive).
+# Maps (old_section, title) -> a human-readable note on where the content
+# went, for topics whose local file moved to a different section's directory
+# (or was merged into a different, already-existing topic elsewhere). Either
+# way the destination page is found/created/updated normally via its own
+# directory scan (see main()); this only archives the leftover page under the
+# OLD section so it doesn't stay behind as an orphaned duplicate. Safe to
+# remove an entry once applied (subsequent runs find no old page to archive).
 MOVES = {
     ("フィジカル", "レイヤートレーニング"): "種目別",
     ("フィジカル", "再生医療"): "トレーナー",
     ("フィジカル", "神経"): "トレーナー",
     ("フィジカル", "慢性腎臓病"): "トレーナー",
+    ("フィジカル", "キッズ"): "トレーナー(子どもの運動に統合)",
 }
 
 
