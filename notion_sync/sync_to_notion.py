@@ -46,6 +46,19 @@ RENAMES = {
     ("フィジカル", "持久力"): ["スピード"],
 }
 
+# Maps (old_section, title) -> new_section, for topics whose local file moved
+# to a different section's directory. The new section finds/creates the page
+# normally via its own directory scan (see main()); this only archives the
+# leftover page under the OLD section so it doesn't stay behind as an
+# orphaned duplicate. Safe to remove an entry once applied (subsequent runs
+# find no old page to archive).
+MOVES = {
+    ("フィジカル", "レイヤートレーニング"): "種目別",
+    ("フィジカル", "再生医療"): "トレーナー",
+    ("フィジカル", "神経"): "トレーナー",
+    ("フィジカル", "慢性腎臓病"): "トレーナー",
+}
+
 
 def _headers():
     return {
@@ -260,9 +273,11 @@ def main():
         print(f"No content directory at {CONTENT_DIR}, nothing to sync.")
         return
 
+    section_page_ids = {}
     for section_dir in sorted(p for p in CONTENT_DIR.iterdir() if p.is_dir()):
         section_title = section_dir.name
         section_page_id, created = ensure_page(root_page_id, section_title)
+        section_page_ids[section_title] = section_page_id
         print(f"[section] {section_title} -> {section_page_id} ({'created' if created else 'existing'})")
 
         for md_file in sorted(section_dir.glob("*.md")):
@@ -283,6 +298,16 @@ def main():
             append_blocks(topic_page_id, blocks)
             print(f"  [topic] {title} -> {topic_page_id} "
                   f"({'created' if created else 'updated'}, {len(blocks)} blocks)")
+
+    for (old_section, title), new_section in MOVES.items():
+        old_section_page_id = section_page_ids.get(old_section) or find_child_page(root_page_id, old_section)
+        if old_section_page_id is None:
+            continue
+        old_topic_page_id = find_child_page(old_section_page_id, title)
+        if old_topic_page_id is None:
+            continue
+        archive_page(old_topic_page_id)
+        print(f"[move] archived '{title}' under old section '{old_section}' (now in '{new_section}')")
 
 
 if __name__ == "__main__":
