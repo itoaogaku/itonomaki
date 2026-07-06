@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { decodeSlug, getAllTopicParams, getSection, getTopic, getTopics } from "@/lib/content";
 import { parseMarkdown } from "@/lib/markdown";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { ScrollToMatch } from "@/components/ScrollToMatch";
 
 export function generateStaticParams() {
   return getAllTopicParams();
@@ -49,9 +50,10 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
         {topic.title}
       </h1>
 
-      <article className="mt-6">
+      <article id="topic-article" className="mt-6">
         <MarkdownContent blocks={blocks} />
       </article>
+      <ScrollToMatch containerId="topic-article" />
 
       {(prev || next) && (
         <div className="mt-12 grid grid-cols-1 gap-3 border-t border-[var(--border)] pt-6 sm:grid-cols-2">

@@ -108,6 +108,20 @@ body {
   background: color-mix(in oklab, var(--accent) 35%, transparent);
 }
 
+/* Briefly flashed on the block scrolled to from a body-text search match
+   (see ScrollToMatch.tsx), then removed — not a persistent style. */
+.search-match-flash {
+  animation: search-match-flash 2.2s ease-out;
+}
+@keyframes search-match-flash {
+  0%, 40% {
+    background: color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
 /* ThemeToggle: both icons are always in the DOM, only one is shown, chosen
    purely by CSS so no client JS state/effect is needed to pick the icon. */
 .theme-icon-dark-visible {

@@ -148,7 +148,11 @@ export function Sidebar({
               {isOpen && (
                 <ul className="mt-0.5 mb-2 space-y-0.5">
                   {section.topics.map((topic) => {
-                    const href = topicHref(section.slug, topic.slug);
+                    // Body-only matches carry the query so the topic page can
+                    // scroll to and flash the matched text (see ScrollToMatch).
+                    const href =
+                      topicHref(section.slug, topic.slug) +
+                      (topic.snippet ? `?q=${encodeURIComponent(query.trim())}` : "");
                     const active = decodedPath === `/${section.slug}/${topic.slug}`;
                     return (
                       <li key={topic.slug}>
