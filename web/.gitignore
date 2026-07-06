@@ -41,6 +41,7 @@ yarn-error.log*
 # (see scripts/copy-content.mjs) — not the source of truth, don't commit it
 /content
 /public/images
+/public/search-index.json
 
 # typescript
 *.tsbuildinfo

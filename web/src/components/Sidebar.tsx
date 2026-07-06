@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-export type NavTopic = { slug: string; title: string };
+export type NavTopic = { slug: string; title: string; snippet?: string };
 export type NavSection = { slug: string; title: string; topics: NavTopic[] };
+
+type SearchIndexEntry = { sectionSlug: string; slug: string; text: string };
 
 function safeDecode(value: string): string {
   try {
@@ -17,6 +19,16 @@ function safeDecode(value: string): string {
 
 function topicHref(sectionSlug: string, topicSlug: string): string {
   return `/${encodeURIComponent(sectionSlug)}/${encodeURIComponent(topicSlug)}`;
+}
+
+/** Short excerpt of `text` centered on the first match of `q`, for a search result preview. */
+function snippetAround(text: string, q: string): string {
+  const idx = text.toLowerCase().indexOf(q);
+  if (idx === -1) return "";
+  const radius = 30;
+  const start = Math.max(0, idx - radius);
+  const end = Math.min(text.length, idx + q.length + radius);
+  return (start > 0 ? "…" : "") + text.slice(start, end) + (end < text.length ? "…" : "");
 }
 
 export function Sidebar({
@@ -35,6 +47,17 @@ export function Sidebar({
     () => new Set(currentSectionSlug ? [currentSectionSlug] : [])
   );
   const [query, setQuery] = useState("");
+  const [searchIndex, setSearchIndex] = useState<SearchIndexEntry[] | null>(null);
+
+  // Fetched lazily (once) on first search, not bundled into every page's
+  // props, since it covers every topic's full body text across the site.
+  useEffect(() => {
+    if (!query.trim() || searchIndex !== null) return;
+    fetch("/search-index.json")
+      .then((res) => res.json())
+      .then(setSearchIndex)
+      .catch(() => setSearchIndex([]));
+  }, [query, searchIndex]);
 
   const toggle = (slug: string) => {
     setOpenSections((prev) => {
@@ -48,13 +71,26 @@ export function Sidebar({
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
+
+    const snippets = new Map<string, string>();
+    for (const entry of searchIndex ?? []) {
+      if (entry.text.toLowerCase().includes(q)) {
+        snippets.set(`${entry.sectionSlug}/${entry.slug}`, snippetAround(entry.text, q));
+      }
+    }
+
     return sections
       .map((section) => ({
         ...section,
-        topics: section.topics.filter((t) => t.title.toLowerCase().includes(q)),
+        topics: section.topics
+          .filter((t) => t.title.toLowerCase().includes(q) || snippets.has(`${section.slug}/${t.slug}`))
+          .map((t) => ({
+            ...t,
+            snippet: t.title.toLowerCase().includes(q) ? undefined : snippets.get(`${section.slug}/${t.slug}`),
+          })),
       }))
       .filter((section) => section.topics.length > 0);
-  }, [sections, query]);
+  }, [sections, query, searchIndex]);
 
   const visibleSections = filteredSections ?? sections;
   const isFiltering = filteredSections !== null;
@@ -120,14 +156,19 @@ export function Sidebar({
                           href={href}
                           onClick={onNavigate}
                           className={
-                            "block truncate rounded-md py-1.5 pl-6 pr-2 text-[0.9rem] leading-tight transition-colors " +
+                            "block rounded-md py-1.5 pl-6 pr-2 text-[0.9rem] leading-tight transition-colors " +
                             (active
                               ? "bg-[var(--accent)]/12 font-medium text-[var(--accent)]"
                               : "text-[var(--fg)] hover:bg-[var(--surface-2)]")
                           }
                           title={topic.title}
                         >
-                          {topic.title}
+                          <span className="block truncate">{topic.title}</span>
+                          {topic.snippet && (
+                            <span className="mt-0.5 block truncate text-[0.75rem] font-normal text-[var(--muted)]">
+                              {topic.snippet}
+                            </span>
+                          )}
                         </Link>
                       </li>
                     );
