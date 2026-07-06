@@ -33,10 +33,14 @@ PNG_CACHE_DIR = Path(__file__).parent / ".svg_render_cache"
 # Maps (section, new topic title) -> [old titles the page may still exist under
 # in Notion]. When a local .md file is renamed, add an entry here so the
 # existing Notion page is renamed in place instead of leaving an orphaned
-# duplicate under its old title. Safe to remove an entry once the rename has
-# been applied (subsequent runs find the page by its new title directly).
+# duplicate under its old title. When multiple old titles are listed (e.g. two
+# topics merged into one), the first found is renamed and any others found are
+# archived, since their content has already been merged into the new file.
+# Safe to remove an entry once the rename/merge has been applied (subsequent
+# runs find the page by its new title directly).
 RENAMES = {
     ("フィジカル", "睡眠"): ["睡眠について"],
+    ("フィジカル", "リコンディショニング"): ["リコンディショニング①", "リコンディショニング②"],
 }
 
 
@@ -107,6 +111,10 @@ def rename_page(page_id, new_title):
     notion_request("PATCH", f"/pages/{page_id}", json=body)
 
 
+def archive_page(page_id):
+    notion_request("PATCH", f"/pages/{page_id}", json={"archived": True})
+
+
 def clear_children(block_id):
     for child in get_children(block_id):
         notion_request("DELETE", f"/blocks/{child['id']}")
@@ -120,13 +128,30 @@ def append_blocks(block_id, blocks):
 def ensure_page(parent_id, title, old_titles=None):
     page_id = find_child_page(parent_id, title)
     if page_id is not None:
+        # Clean up any leftover old-titled duplicates (e.g. a previous run's
+        # merge was interrupted before archiving them all).
+        for old_title in old_titles or []:
+            old_page_id = find_child_page(parent_id, old_title)
+            if old_page_id is not None and old_page_id != page_id:
+                archive_page(old_page_id)
+                print(f"  [topic] archived leftover duplicate '{old_title}'")
         return page_id, False
+
+    renamed_page_id = None
     for old_title in old_titles or []:
         old_page_id = find_child_page(parent_id, old_title)
-        if old_page_id is not None:
+        if old_page_id is None:
+            continue
+        if renamed_page_id is None:
             rename_page(old_page_id, title)
+            renamed_page_id = old_page_id
             print(f"  [topic] renamed '{old_title}' -> '{title}'")
-            return old_page_id, False
+        else:
+            archive_page(old_page_id)
+            print(f"  [topic] archived leftover duplicate '{old_title}'")
+    if renamed_page_id is not None:
+        return renamed_page_id, False
+
     return create_page(parent_id, title), True
 
 
