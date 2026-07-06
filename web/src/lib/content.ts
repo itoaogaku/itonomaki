@@ -79,7 +79,7 @@ export function getSection(sectionSlug: string): SectionSummary | undefined {
  * the rest of that section's topics (which stay in alphabetical order).
  */
 const PINNED_TOPICS: Record<string, string[]> = {
-  フィジカル: ["大会準備", "マラソン準備", "リカバリー", "リコンディショニング", "ランニング基礎"],
+  フィジカル: ["大会準備", "マラソン準備", "リカバリー", "リコンディショニング", "ランニング基礎", "コアパフォーマンス"],
 };
 
 function sortTopics(sectionSlug: string, fileNames: string[]): string[] {
