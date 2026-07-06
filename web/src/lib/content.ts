@@ -93,6 +93,9 @@ const PINNED_TOPICS: Record<string, string[]> = {
     "自律神経",
     "睡眠",
     "食事",
+    "運動連鎖",
+    "ライン",
+    "トレーニングポイント",
   ],
 };
 
