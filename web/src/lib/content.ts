@@ -42,7 +42,7 @@ function readDirSorted(dir: string): string[] {
 }
 
 /** Section order as curated for the trainer knowledge base (not alphabetical). */
-const SECTION_ORDER = ["フィジカル", "メンタル", "部位別", "種目別", "トレーナー"];
+export const SECTION_ORDER = ["フィジカル", "メンタル", "部位別", "種目別", "トレーナー"];
 
 function sortSections(names: string[]): string[] {
   return [...names].sort((a, b) => {

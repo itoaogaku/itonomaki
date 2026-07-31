@@ -53,6 +53,19 @@ export function AppShell({
             <span className="truncate">トレーナー知見ライブラリ</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
+            <Link
+              href="/edit"
+              aria-label="編集"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--fg)] hover:bg-[var(--surface-2)]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                />
+              </svg>
+            </Link>
             <ThemeToggle />
           </div>
         </header>

@@ -2,7 +2,7 @@
 
 `../notion_sync/content` 以下の Markdown(フィジカル・メンタル・部位別・種目別・トレーナーの5カテゴリ、159トピック)を読み込んで表示する閲覧用サイトです。Notion と同じ内容を、ブラウザで見やすいレイアウト・検索・ダークモード付きで公開するためのものです。
 
-コンテンツの編集は今まで通り `../notion_sync/content/**/*.md` を直接編集し、git にコミット・push してください。このサイトはビルド時にその Markdown を読み込むだけで、ここから直接編集することはありません。
+コンテンツは `../notion_sync/content/**/*.md` を直接編集して git に push する方法に加え、サイト右上の編集アイコン(`/edit`)からブラウザ上で追記・新規トピック作成もできます(下記「ウェブ編集機能」参照)。
 
 ## 仕組み
 
@@ -25,12 +25,20 @@ http://localhost:3000 を開きます。
 
 ローカルで試す場合は `.env.example` を `.env.local` にコピーして値を設定してください。
 
+## ウェブ編集機能
+
+サイト右上の編集アイコンから `/edit` を開くと、ブラウザから既存トピックへの追記・新規トピックの作成ができます。閲覧用の Basic 認証(`SITE_USER`/`SITE_PASSWORD`)とは別に、編集専用のパスワード(`EDIT_PASSWORD`)でさらにログインが必要です。
+
+保存すると `notion_sync/content/<カテゴリ>/<トピック>.md` に直接コミットされ(GitHub Contents API 経由、`GITHUB_TOKEN` が必要)、Vercel の自動デプロイで数十秒〜数分後にサイトへ反映されます。git を直接操作するのと同じ変更が起きるだけなので、Notion への同期(`notion_sync/sync_to_notion.py`)も次回実行時に反映されます。
+
+必要な環境変数(`.env.example` 参照): `EDIT_PASSWORD`、`GITHUB_TOKEN`(このリポジトリへの `contents:write` 権限が必要)。未設定の場合、`/edit` にアクセスしても保存はできません。
+
 ## Vercel へのデプロイ
 
 1. [vercel.com](https://vercel.com) で GitHub リポジトリ `itoaogaku/itonomaki` をインポート
 2. プロジェクト設定で **Root Directory** を `web` に設定
 3. Framework Preset は Next.js が自動検出されます
-4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD` を設定(限定公開にする場合)
+4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD`(限定公開にする場合)、`EDIT_PASSWORD` / `GITHUB_TOKEN`(ウェブ編集機能を使う場合)を設定
 5. Deploy
 
 以降は `claude/trainer-knowledge-notion-xg5660` ブランチ(または本番運用するブランチ)に push するたびに自動で再デプロイされます。
