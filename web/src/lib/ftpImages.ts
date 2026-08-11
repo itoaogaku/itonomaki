@@ -5,7 +5,9 @@ import { Client } from "basic-ftp";
 import sharp from "sharp";
 import { Readable } from "node:stream";
 
-const REMOTE_DIR = "library-images";
+// The FTP account itself is scoped to library-images/ as its login root
+// (configured on the Xserver side), so uploads land directly there — no
+// subdirectory to create or change into.
 const PUBLIC_BASE_URL = "https://acc-pg.com/library-images";
 
 // Phone photos are routinely 3000px+ wide and several MB; this keeps the
@@ -60,7 +62,6 @@ export async function uploadImage(fileBuffer: Buffer, originalName: string): Pro
   const client = new Client(15_000); // fail fast rather than leave the editor spinning
   try {
     await client.access({ host, user, password, secure: true });
-    await client.ensureDir(REMOTE_DIR);
     await client.uploadFrom(Readable.from(compressed), filename);
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
