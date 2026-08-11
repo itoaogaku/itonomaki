@@ -13,17 +13,25 @@ function timingSafeStringEqual(a: string, b: string): boolean {
   return bufA.length === bufB.length && timingSafeEqual(bufA, bufB);
 }
 
+/** EDIT_PASSWORD, trimmed of accidental leading/trailing whitespace — easy to
+ *  pick up when pasting into Vercel's env var field or from a password
+ *  manager, and would otherwise cause silent, confusing login failures. */
+function envPassword(): string | undefined {
+  const raw = process.env.EDIT_PASSWORD;
+  return raw ? raw.trim() : undefined;
+}
+
 /** Token proving a request already supplied EDIT_PASSWORD, derived from it
  *  so no session state needs to be stored anywhere. */
 function expectedToken(): string {
-  const password = process.env.EDIT_PASSWORD;
+  const password = envPassword();
   if (!password) throw new Error("EDIT_PASSWORD is not configured");
   return createHmac("sha256", password).update("edit-authorized").digest("hex");
 }
 
 export function checkPassword(password: string): boolean {
-  const expected = process.env.EDIT_PASSWORD;
-  return typeof expected === "string" && expected.length > 0 && timingSafeStringEqual(password, expected);
+  const expected = envPassword();
+  return typeof expected === "string" && expected.length > 0 && timingSafeStringEqual(password.trim(), expected);
 }
 
 export function signToken(): string {
