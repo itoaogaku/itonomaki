@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
+const STARRED_FILE = path.join(process.cwd(), "starred.json");
 
 export type SectionSummary = {
   slug: string;
@@ -12,7 +13,22 @@ export type SectionSummary = {
 export type TopicSummary = {
   slug: string;
   title: string;
+  starred: boolean;
 };
+
+/** Key format used in starred.json and the /api/edit/star request body. */
+export function starredKey(sectionSlug: string, topicSlug: string): string {
+  return `${sectionSlug}/${topicSlug}`;
+}
+
+function getStarredSet(): Set<string> {
+  try {
+    const list = JSON.parse(fs.readFileSync(STARRED_FILE, "utf-8"));
+    return new Set(Array.isArray(list) ? list : []);
+  } catch {
+    return new Set();
+  }
+}
 
 export type TopicContent = TopicSummary & {
   sectionSlug: string;
@@ -115,10 +131,11 @@ function sortTopics(sectionSlug: string, fileNames: string[]): string[] {
 export function getTopics(sectionSlug: string): TopicSummary[] {
   const dir = path.join(CONTENT_DIR, sectionSlug);
   if (!fs.existsSync(dir)) return [];
+  const starred = getStarredSet();
   const files = sortTopics(sectionSlug, readDirSorted(dir).filter((f) => f.endsWith(".md")));
   return files.map((file) => {
     const slug = file.replace(/\.md$/, "");
-    return { slug, title: slug };
+    return { slug, title: slug, starred: starred.has(starredKey(sectionSlug, slug)) };
   });
 }
 
@@ -131,6 +148,7 @@ export function getTopic(sectionSlug: string, topicSlug: string): TopicContent |
   return {
     slug: topicSlug,
     title: topicSlug,
+    starred: getStarredSet().has(starredKey(sectionSlug, topicSlug)),
     sectionSlug,
     sectionTitle: section.title,
     raw,

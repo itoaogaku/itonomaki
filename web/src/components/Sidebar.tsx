@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-export type NavTopic = { slug: string; title: string; snippet?: string };
+export type NavTopic = { slug: string; title: string; starred?: boolean; snippet?: string };
 export type NavSection = { slug: string; title: string; topics: NavTopic[] };
 
 type SearchIndexEntry = { sectionSlug: string; slug: string; text: string };
@@ -167,7 +167,10 @@ export function Sidebar({
                           }
                           title={topic.title}
                         >
-                          <span className="block truncate">{topic.title}</span>
+                          <span className="flex items-center gap-1 truncate">
+                            {topic.starred && <span aria-hidden>⭐️</span>}
+                            <span className="truncate">{topic.title}</span>
+                          </span>
                           {topic.snippet && (
                             <span className="mt-0.5 block truncate text-[0.75rem] font-normal text-[var(--muted)]">
                               {topic.snippet}

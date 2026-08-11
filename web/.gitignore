@@ -42,6 +42,7 @@ yarn-error.log*
 /content
 /public/images
 /public/search-index.json
+/starred.json
 
 # typescript
 *.tsbuildinfo

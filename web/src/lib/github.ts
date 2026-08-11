@@ -25,19 +25,21 @@ function authHeaders() {
   };
 }
 
-function contentsUrl(section: string, topic: string): string {
-  const path = `${CONTENT_PREFIX}/${section}/${topic}.md`;
+function contentsUrlForPath(path: string): string {
   const encodedPath = path.split("/").map(encodeURIComponent).join("/");
   return `${GITHUB_API}/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
 }
 
+function contentPath(section: string, topic: string): string {
+  return `${CONTENT_PREFIX}/${section}/${topic}.md`;
+}
+
 export type RemoteFile = { content: string; sha: string };
 
-/** Fetches a topic's current Markdown straight from GitHub (not the local
- *  build's copy, which may be stale between deploys). Returns null if the
- *  topic doesn't exist yet. */
-export async function getFile(section: string, topic: string): Promise<RemoteFile | null> {
-  const res = await fetch(`${contentsUrl(section, topic)}?ref=${targetBranch()}`, {
+/** Fetches a file straight from GitHub (not the local build's copy, which
+ *  may be stale between deploys). Returns null if it doesn't exist yet. */
+export async function getFileAtPath(path: string): Promise<RemoteFile | null> {
+  const res = await fetch(`${contentsUrlForPath(path)}?ref=${targetBranch()}`, {
     headers: authHeaders(),
     cache: "no-store",
   });
@@ -47,17 +49,16 @@ export async function getFile(section: string, topic: string): Promise<RemoteFil
   return { content: Buffer.from(data.content, "base64").toString("utf-8"), sha: data.sha };
 }
 
-/** Creates or updates a topic's Markdown with a single commit. Pass the sha
- *  from a just-fetched getFile() when updating (GitHub rejects the write
- *  otherwise); omit it when creating a new topic. */
-export async function putFile(
-  section: string,
-  topic: string,
+/** Creates or updates a file with a single commit. Pass the sha from a
+ *  just-fetched getFileAtPath() when updating (GitHub rejects the write
+ *  otherwise); omit it when creating a new file. */
+export async function putFileAtPath(
+  path: string,
   content: string,
   sha: string | null,
   message: string
 ): Promise<void> {
-  const res = await fetch(contentsUrl(section, topic), {
+  const res = await fetch(contentsUrlForPath(path), {
     method: "PUT",
     headers: { ...authHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -68,4 +69,18 @@ export async function putFile(
     }),
   });
   if (!res.ok) throw new Error(`GitHub API error ${res.status}: ${await res.text()}`);
+}
+
+export function getFile(section: string, topic: string): Promise<RemoteFile | null> {
+  return getFileAtPath(contentPath(section, topic));
+}
+
+export function putFile(
+  section: string,
+  topic: string,
+  content: string,
+  sha: string | null,
+  message: string
+): Promise<void> {
+  return putFileAtPath(contentPath(section, topic), content, sha, message);
 }

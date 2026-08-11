@@ -42,9 +42,10 @@ export default async function SectionPage(props: PageProps<"/[section]">) {
           <li key={topic.slug}>
             <Link
               href={`/${encodeURIComponent(section.slug)}/${encodeURIComponent(topic.slug)}`}
-              className="block rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-[0.95rem] font-medium text-[var(--fg)] transition-colors hover:border-[var(--accent)]/50 hover:text-[var(--accent)]"
+              className="flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-[0.95rem] font-medium text-[var(--fg)] transition-colors hover:border-[var(--accent)]/50 hover:text-[var(--accent)]"
             >
-              {topic.title}
+              {topic.starred && <span aria-hidden>⭐️</span>}
+              <span className="truncate">{topic.title}</span>
             </Link>
           </li>
         ))}

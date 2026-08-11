@@ -5,6 +5,7 @@ import { decodeSlug, getAllTopicParams, getSection, getTopic, getTopics } from "
 import { parseMarkdown } from "@/lib/markdown";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { ScrollToMatch } from "@/components/ScrollToMatch";
+import { StarButton } from "@/components/StarButton";
 
 export function generateStaticParams() {
   return getAllTopicParams();
@@ -46,9 +47,10 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
         <span className="text-[var(--fg)]">{topic.title}</span>
       </nav>
 
-      <h1 className="mt-3 text-2xl font-bold tracking-tight text-[var(--fg-strong)] md:text-3xl">
-        {topic.title}
-      </h1>
+      <div className="mt-3 flex items-center gap-3">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--fg-strong)] md:text-3xl">{topic.title}</h1>
+        <StarButton section={sectionSlug} topic={topicSlug} initialStarred={topic.starred} />
+      </div>
 
       <article id="topic-article" className="mt-6">
         <MarkdownContent blocks={blocks} />
