@@ -33,12 +33,18 @@ http://localhost:3000 を開きます。
 
 必要な環境変数(`.env.example` 参照): `EDIT_PASSWORD`、`GITHUB_TOKEN`(このリポジトリへの `contents:write` 権限が必要)。未設定の場合、`/edit` にアクセスしても保存はできません。
 
+### 写真のアップロード
+
+編集画面から写真も追加できます。アップロードされた写真は自動でリサイズ・圧縮(最大1600px、JPEG品質82)された上で、git リポジトリではなく **FTP 経由でトレーナーの既存の Xserver ホスティング**(`library-images` フォルダ)にアップロードされ、そのURLが本文に挿入されます。Vercel のデプロイサイズ制限を回避しつつ、既に契約しているホスティングを再利用する形です。
+
+必要な環境変数(`.env.example` 参照): `FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`。未設定の場合、写真アップロードのみ失敗します(それ以外の編集機能には影響しません)。
+
 ## Vercel へのデプロイ
 
 1. [vercel.com](https://vercel.com) で GitHub リポジトリ `itoaogaku/itonomaki` をインポート
 2. プロジェクト設定で **Root Directory** を `web` に設定
 3. Framework Preset は Next.js が自動検出されます
-4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD`(限定公開にする場合)、`EDIT_PASSWORD` / `GITHUB_TOKEN`(ウェブ編集機能を使う場合)を設定
+4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD`(限定公開にする場合)、`EDIT_PASSWORD` / `GITHUB_TOKEN`(ウェブ編集機能を使う場合)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(写真アップロード機能を使う場合)を設定
 5. Deploy
 
 以降は `claude/trainer-knowledge-notion-xg5660` ブランチ(または本番運用するブランチ)に push するたびに自動で再デプロイされます。

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Topic = { slug: string; title: string };
 type Section = { slug: string; title: string; topics: Topic[] };
@@ -92,7 +92,42 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [contentText, setContentText] = useState("");
   const [loadingContent, setLoadingContent] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  function insertAtCursor(text: string) {
+    const el = textareaRef.current;
+    if (!el) {
+      setContentText((prev) => prev + text);
+      return;
+    }
+    const start = el.selectionStart ?? contentText.length;
+    const end = el.selectionEnd ?? contentText.length;
+    setContentText(contentText.slice(0, start) + text + contentText.slice(end));
+    requestAnimationFrame(() => {
+      el.focus();
+      const pos = start + text.length;
+      el.setSelectionRange(pos, pos);
+    });
+  }
+
+  async function handleImageUpload(file: File) {
+    setUploadingImage(true);
+    setMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/edit/upload-image", { method: "POST", body: formData });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "画像のアップロードに失敗しました");
+      insertAtCursor(`![](${data.url})\n`);
+    } catch (err) {
+      setMessage({ type: "error", text: err instanceof Error ? err.message : "画像のアップロードに失敗しました" });
+    } finally {
+      setUploadingImage(false);
+    }
+  }
 
   function handleSectionChange(nextSection: string) {
     setSectionSlug(nextSection);
@@ -234,9 +269,26 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
         )}
       </div>
 
-      <label className="block text-sm font-medium text-[var(--fg)]">
-        本文(Markdown)
+      <div>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <label className="text-sm font-medium text-[var(--fg)]">本文(Markdown)</label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--accent)]">
+            {uploadingImage ? "アップロード中..." : "📷 写真を追加"}
+            <input
+              type="file"
+              accept="image/*"
+              disabled={uploadingImage}
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (file) handleImageUpload(file);
+              }}
+            />
+          </label>
+        </div>
         <textarea
+          ref={textareaRef}
           value={contentText}
           onChange={(e) => setContentText(e.target.value)}
           disabled={loadingContent}
@@ -244,7 +296,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
           className={`${fieldClass} font-mono disabled:opacity-50`}
           placeholder={loadingContent ? "読み込み中..." : undefined}
         />
-      </label>
+      </div>
 
       <div className="flex items-center gap-3">
         <button
