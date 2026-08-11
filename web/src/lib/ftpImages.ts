@@ -39,9 +39,14 @@ export async function uploadImage(fileBuffer: Buffer, originalName: string): Pro
     );
   }
 
+  // ASCII-only: FTP has no guaranteed charset for filenames, and this host
+  // has previously stored non-ASCII (Japanese) filenames under different
+  // bytes than what the web server expects, producing 404s for files that
+  // genuinely exist. Stripping to ASCII sidesteps that entirely.
   const safeStem = originalName
     .replace(/\.[^.]+$/, "")
-    .replace(/[^\w\-ぁ-んァ-ヶ一-龠]+/gu, "-")
+    .replace(/[^\w-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .slice(0, 60);
   const filename = `${Date.now()}-${safeStem || "image"}.jpg`;
 
