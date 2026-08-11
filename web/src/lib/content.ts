@@ -115,10 +115,17 @@ const PINNED_TOPICS: Record<string, string[]> = {
   ],
 };
 
-function sortTopics(sectionSlug: string, fileNames: string[]): string[] {
+/** Starred topics sort first, then pinned topics (in PINNED_TOPICS order),
+ *  then everything else alphabetically — each tier keeping that same order
+ *  internally, so starring doesn't disturb the curated pinned ordering. */
+function sortTopics(sectionSlug: string, fileNames: string[], starred: Set<string>): string[] {
   const pinned = PINNED_TOPICS[sectionSlug] ?? [];
   const slugOf = (fileName: string) => fileName.replace(/\.md$/, "");
   return [...fileNames].sort((a, b) => {
+    const aStarred = starred.has(starredKey(sectionSlug, slugOf(a)));
+    const bStarred = starred.has(starredKey(sectionSlug, slugOf(b)));
+    if (aStarred !== bStarred) return aStarred ? -1 : 1;
+
     const ai = pinned.indexOf(slugOf(a));
     const bi = pinned.indexOf(slugOf(b));
     if (ai !== -1 && bi !== -1) return ai - bi;
@@ -132,7 +139,7 @@ export function getTopics(sectionSlug: string): TopicSummary[] {
   const dir = path.join(CONTENT_DIR, sectionSlug);
   if (!fs.existsSync(dir)) return [];
   const starred = getStarredSet();
-  const files = sortTopics(sectionSlug, readDirSorted(dir).filter((f) => f.endsWith(".md")));
+  const files = sortTopics(sectionSlug, readDirSorted(dir).filter((f) => f.endsWith(".md")), starred);
   return files.map((file) => {
     const slug = file.replace(/\.md$/, "");
     return { slug, title: slug, starred: starred.has(starredKey(sectionSlug, slug)) };
