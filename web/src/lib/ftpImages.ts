@@ -13,8 +13,10 @@ const PUBLIC_BASE_URL = "https://acc-pg.com/library-images";
 const MAX_DIMENSION = 1600;
 const JPEG_QUALITY = 82;
 
+/** Trimmed to survive a trailing newline/space picked up when pasting into
+ *  Vercel's env var field — the same issue seen with EDIT_PASSWORD. */
 function envOrThrow(name: string): string {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
   if (!value) throw new Error(`${name} is not configured`);
   return value;
 }
