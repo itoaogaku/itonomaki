@@ -17,14 +17,14 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen">
-      <div className="hidden md:block md:w-72 md:shrink-0">
+      <div className="hidden md:block md:w-72 md:shrink-0 print:hidden">
         <div className="sticky top-0 h-screen">
           <Sidebar sections={sections} />
         </div>
       </div>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <div className="fixed inset-0 z-40 md:hidden print:hidden">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
@@ -37,7 +37,7 @@ export function AppShell({
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[var(--border)] bg-[var(--surface)]/90 px-4 py-3 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[var(--border)] bg-[var(--surface)]/90 px-4 py-3 backdrop-blur md:px-8 print:hidden">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}

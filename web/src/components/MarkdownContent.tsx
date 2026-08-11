@@ -81,7 +81,7 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
               return <hr key={i} className="my-8 border-[var(--border)]" />;
             case "image":
               return (
-                <figure key={i} className="my-6">
+                <figure key={i} className="my-6 print:break-inside-avoid">
                   {/* eslint-disable-next-line @next/next/no-img-element -- svg illustrations, no need for next/image optimization */}
                   <img
                     src={block.src}
@@ -115,7 +115,7 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
                     </thead>
                     <tbody>
                       {block.rows.map((row, ri) => (
-                        <tr key={ri} className="odd:bg-transparent even:bg-[var(--surface-2)]/40">
+                        <tr key={ri} className="odd:bg-transparent even:bg-[var(--surface-2)]/40 print:break-inside-avoid">
                           {row.map((cell, ci) => (
                             <td key={ci} className="border-b border-[var(--border)]/60 px-3 py-2 align-top">
                               <Inline tokens={cell} />

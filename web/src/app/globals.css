@@ -151,6 +151,51 @@ body {
   display: block;
 }
 
+/* Printing a topic page (see PrintButton.tsx): force a light, ink-friendly
+   palette regardless of the on-screen theme, and make sure callout tints
+   actually print (browsers drop background colors by default). Layout
+   chrome (sidebar/header/nav) is hidden per-element with Tailwind's
+   print:hidden utility instead of listed here. */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --border: #d8d3c5;
+    --fg: #2b2a27;
+    --fg-strong: #17160f;
+    --muted: #6b675a;
+    --accent: #2f7f6f;
+    --accent-fg: #ffffff;
+    --callout-info-bg: #f0fdfa;
+    --callout-info-border: #99e6d9;
+    --callout-info-fg: #042f2e;
+    --callout-warn-bg: #fffbeb;
+    --callout-warn-border: #fcd34d;
+    --callout-warn-fg: #451a03;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    background: #ffffff;
+  }
+  /* Wide reference tables rely on horizontal *scrolling* on screen
+     (overflow-x-auto + a min-width on <table>), which doesn't exist on a
+     printed page — without this they'd just get clipped. Let them shrink
+     and wrap instead. */
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+  table {
+    min-width: 0 !important;
+  }
+  th {
+    white-space: normal !important;
+  }
+}
+
 /* thin, unobtrusive scrollbar for the sidebar */
 .thin-scroll {
   scrollbar-width: thin;

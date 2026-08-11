@@ -6,7 +6,7 @@ export function Callout({ icon, lines }: { icon: "💡" | "⚠️"; lines: Inlin
   return (
     <div
       className={
-        "my-5 flex gap-3 rounded-xl border px-4 py-3.5 text-[0.975rem] leading-[1.85] " +
+        "my-5 flex gap-3 rounded-xl border px-4 py-3.5 text-[0.975rem] leading-[1.85] print:break-inside-avoid " +
         (isWarning
           ? "border-[var(--callout-warn-border)] bg-[var(--callout-warn-bg)] text-[var(--callout-warn-fg)]"
           : "border-[var(--callout-info-border)] bg-[var(--callout-info-bg)] text-[var(--callout-info-fg)]")

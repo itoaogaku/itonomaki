@@ -6,6 +6,7 @@ import { parseMarkdown } from "@/lib/markdown";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { ScrollToMatch } from "@/components/ScrollToMatch";
 import { StarButton } from "@/components/StarButton";
+import { PrintButton } from "@/components/PrintButton";
 
 export function generateStaticParams() {
   return getAllTopicParams();
@@ -50,6 +51,7 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
       <div className="mt-3 flex items-center gap-3">
         <h1 className="text-2xl font-bold tracking-tight text-[var(--fg-strong)] md:text-3xl">{topic.title}</h1>
         <StarButton section={sectionSlug} topic={topicSlug} initialStarred={topic.starred} />
+        <PrintButton />
       </div>
 
       <article id="topic-article" className="mt-6">
@@ -58,7 +60,7 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
       <ScrollToMatch containerId="topic-article" />
 
       {(prev || next) && (
-        <div className="mt-12 grid grid-cols-1 gap-3 border-t border-[var(--border)] pt-6 sm:grid-cols-2">
+        <div className="mt-12 grid grid-cols-1 gap-3 border-t border-[var(--border)] pt-6 sm:grid-cols-2 print:hidden">
           {prev ? (
             <Link
               href={`/${encodeURIComponent(sectionSlug)}/${encodeURIComponent(prev.slug)}`}
