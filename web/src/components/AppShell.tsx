@@ -49,8 +49,8 @@ export function AppShell({
             </svg>
           </button>
           <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight text-[var(--fg-strong)]">
-            <span className="text-lg">🏃</span>
-            <span className="truncate">トレーナー知見ライブラリ</span>
+            <span className="text-lg">💪</span>
+            <span className="truncate">青トレ(基礎知識)</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             <Link

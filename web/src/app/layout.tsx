@@ -5,8 +5,8 @@ import { getSections, getTopics } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: {
-    default: "トレーナー知見ライブラリ",
-    template: "%s | トレーナー知見ライブラリ",
+    default: "青トレ(基礎知識)",
+    template: "%s | 青トレ(基礎知識)",
   },
   description: "フィジカル・メンタル・部位別・種目別・トレーナー知見をまとめたナレッジベース",
   robots: { index: false, follow: false },

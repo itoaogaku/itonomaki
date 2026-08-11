@@ -25,7 +25,7 @@ export default function HomePage() {
     <div className="mx-auto max-w-5xl px-4 py-12 md:px-8 md:py-16">
       <p className="text-sm font-medium tracking-wide text-[var(--accent)] uppercase">Trainer Knowledge Base</p>
       <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--fg-strong)] md:text-4xl">
-        トレーナー知見ライブラリ
+        青トレ(基礎知識)
       </h1>
       <p className="mt-4 max-w-2xl leading-[1.9] text-[var(--muted)]">
         現場で蓄積してきた知見に、誰が読んでも理解できるよう基礎知識の解説を添えて整理したナレッジベースです。
