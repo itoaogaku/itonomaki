@@ -113,12 +113,15 @@ export function parseMarkdown(mdText: string, imageBase: string = ""): Block[] {
       quoteBuffer.push(stripped.replace(/^>+/, "").trim());
     } else if (IMAGE_PATTERN.test(stripped)) {
       const match = stripped.match(IMAGE_PATTERN)!;
-      // Source markdown always points at an "images/" folder alongside the
-      // topic file (see notion_sync/content/<section>/images/); the public
-      // copy drops that intermediate segment (see copy-content.mjs), so the
-      // prefix is stripped here to match.
-      const relPath = match[2].replace(/^images\//, "");
-      blocks.push({ type: "image", alt: match[1], src: imageBase + relPath });
+      // Uploaded photos (web editor) are already-absolute URLs (hosted
+      // externally, see src/lib/ftpImages.ts) and must be used as-is.
+      // Everything else follows the source convention: markdown always
+      // points at an "images/" folder alongside the topic file (see
+      // notion_sync/content/<section>/images/); the public copy drops that
+      // intermediate segment (see copy-content.mjs), so the prefix is
+      // stripped here to match.
+      const src = /^https?:\/\//.test(match[2]) ? match[2] : imageBase + match[2].replace(/^images\//, "");
+      blocks.push({ type: "image", alt: match[1], src });
     } else if (/^- \[ \] /.test(stripped)) {
       blocks.push({ type: "todo", text: parseInline(stripped.slice(6)), checked: false });
     } else if (/^- \[[xX]\] /.test(stripped)) {
