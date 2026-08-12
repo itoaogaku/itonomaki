@@ -100,10 +100,24 @@ export function EditWorkspace({ sections }: { sections: Section[] }) {
 
 function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => void }) {
   const [mode, setMode] = useState<"edit" | "create">("edit");
-  const [sectionSlug, setSectionSlug] = useState(sections[0]?.slug ?? "");
+  // Editor only ever mounts client-side (after the auth check resolves), so
+  // reading location.search here can't cause a hydration mismatch. The
+  // 編集 button in the header links here with ?section=&topic= for whatever
+  // topic was being viewed, rather than always opening the first one.
+  const [sectionSlug, setSectionSlug] = useState(() => {
+    if (typeof window === "undefined") return sections[0]?.slug ?? "";
+    const requested = new URLSearchParams(window.location.search).get("section");
+    return requested && sections.some((s) => s.slug === requested) ? requested : sections[0]?.slug ?? "";
+  });
   const currentSection = sections.find((s) => s.slug === sectionSlug);
 
-  const [topicSlug, setTopicSlug] = useState(currentSection?.topics[0]?.slug ?? "");
+  const [topicSlug, setTopicSlug] = useState(() => {
+    if (typeof window === "undefined") return currentSection?.topics[0]?.slug ?? "";
+    const requested = new URLSearchParams(window.location.search).get("topic");
+    return requested && currentSection?.topics.some((t) => t.slug === requested)
+      ? requested
+      : (currentSection?.topics[0]?.slug ?? "");
+  });
   const [newTitle, setNewTitle] = useState("");
   const [contentText, setContentText] = useState("");
   const [loadingContent, setLoadingContent] = useState(false);

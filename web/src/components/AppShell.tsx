@@ -1,9 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Sidebar, type NavSection } from "./Sidebar";
 import { ThemeToggle } from "./ThemeToggle";
+
+/** Points 編集 at whichever topic/section is currently being viewed, so
+ *  pressing it opens the editor already on that topic instead of always
+ *  defaulting to the first one. Falls back to a bare `/edit` on pages that
+ *  aren't a known section/topic (home, the editor itself, etc). */
+function useEditHref(sections: NavSection[]): string {
+  const pathname = usePathname() ?? "";
+  let decoded = pathname;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    // malformed percent-encoding — fall through with the raw pathname
+  }
+  const [, sectionSlug, topicSlug] = decoded.split("/");
+  const section = sections.find((s) => s.slug === sectionSlug);
+  if (!section) return "/edit";
+
+  const topic = topicSlug ? section.topics.find((t) => t.slug === topicSlug) : undefined;
+  const params = new URLSearchParams({ section: section.slug, ...(topic ? { topic: topic.slug } : {}) });
+  return `/edit?${params.toString()}`;
+}
 
 export function AppShell({
   sections,
@@ -14,6 +36,7 @@ export function AppShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeMobile = () => setMobileOpen(false);
+  const editHref = useEditHref(sections);
 
   return (
     <div className="flex min-h-screen">
@@ -54,7 +77,7 @@ export function AppShell({
           </Link>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              href="/edit"
+              href={editHref}
               aria-label="編集"
               className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--fg)] hover:bg-[var(--surface-2)]"
             >
