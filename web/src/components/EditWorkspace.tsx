@@ -93,6 +93,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [loadingContent, setLoadingContent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -102,9 +103,14 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
       setContentText((prev) => prev + text);
       return;
     }
-    const start = el.selectionStart ?? contentText.length;
-    const end = el.selectionEnd ?? contentText.length;
-    setContentText(contentText.slice(0, start) + text + contentText.slice(end));
+    // Multiple images uploaded in one batch call this several times in
+    // quick succession, well before React re-renders in between — reading
+    // `contentText` here would see the same stale value every time and each
+    // insertion would clobber the last. The functional update form always
+    // sees the true latest state.
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    setContentText((prev) => prev.slice(0, start) + text + prev.slice(end));
     requestAnimationFrame(() => {
       el.focus();
       const pos = start + text.length;
@@ -112,20 +118,34 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
     });
   }
 
-  async function handleImageUpload(file: File) {
+  // Uploads are sequential (not parallel) so the FTP server isn't hit with
+  // concurrent connections, and so progress ("2/5枚") is easy to report.
+  async function handleImageUpload(files: FileList | File[]) {
+    const fileArray = Array.from(files);
+    if (fileArray.length === 0) return;
     setUploadingImage(true);
     setMessage(null);
+    let uploaded = 0;
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/edit/upload-image", { method: "POST", body: formData });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error ?? "画像のアップロードに失敗しました");
-      insertAtCursor(`![](${data.url})\n`);
+      for (const file of fileArray) {
+        setUploadProgress({ done: uploaded, total: fileArray.length });
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/edit/upload-image", { method: "POST", body: formData });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(`${file.name}: ${data.error ?? "画像のアップロードに失敗しました"}`);
+        insertAtCursor(`![](${data.url})\n`);
+        uploaded += 1;
+      }
+      if (fileArray.length > 1) {
+        setMessage({ type: "success", text: `${fileArray.length}枚アップロードしました` });
+      }
     } catch (err) {
-      setMessage({ type: "error", text: err instanceof Error ? err.message : "画像のアップロードに失敗しました" });
+      const detail = err instanceof Error ? err.message : "画像のアップロードに失敗しました";
+      setMessage({ type: "error", text: uploaded > 0 ? `${uploaded}枚アップロード後にエラー: ${detail}` : detail });
     } finally {
       setUploadingImage(false);
+      setUploadProgress(null);
     }
   }
 
@@ -273,16 +293,23 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
         <div className="flex flex-wrap items-center justify-between gap-2">
           <label className="text-sm font-medium text-[var(--fg)]">本文(Markdown)</label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--accent)]">
-            {uploadingImage ? "アップロード中..." : "📷 写真を追加"}
+            {uploadingImage
+              ? `アップロード中... (${uploadProgress ? uploadProgress.done + 1 : 1}/${uploadProgress?.total ?? 1})`
+              : "📷 写真を追加(複数選択可)"}
             <input
               type="file"
               accept="image/*"
+              multiple
               disabled={uploadingImage}
               className="hidden"
               onChange={(e) => {
-                const file = e.target.files?.[0];
+                // Detach from the live FileList before resetting the input
+                // below — resetting .value clears the FileList in place in
+                // some browsers, which would silently empty this reference
+                // too if it weren't copied out first.
+                const files = Array.from(e.target.files ?? []);
                 e.target.value = "";
-                if (file) handleImageUpload(file);
+                if (files.length > 0) handleImageUpload(files);
               }}
             />
           </label>
