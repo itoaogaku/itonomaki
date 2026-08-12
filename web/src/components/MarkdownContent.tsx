@@ -57,6 +57,7 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
               return (
                 <h2
                   key={i}
+                  id={block.id}
                   className="mt-10 mb-4 scroll-mt-24 border-b border-[var(--border)] pb-2 text-xl font-bold tracking-tight text-[var(--fg-strong)] first:mt-0"
                 >
                   <Inline tokens={block.text} />
@@ -66,6 +67,7 @@ export function MarkdownContent({ blocks }: { blocks: Block[] }) {
               return (
                 <h3
                   key={i}
+                  id={block.id}
                   className="mt-8 mb-3 scroll-mt-24 text-lg font-semibold text-[var(--fg-strong)]"
                 >
                   <Inline tokens={block.text} />

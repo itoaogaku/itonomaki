@@ -9,7 +9,8 @@ export type InlineToken =
   | { type: "code"; content: string };
 
 export type Block =
-  | { type: "heading1" | "heading2" | "heading3"; text: InlineToken[] }
+  | { type: "heading1"; text: InlineToken[] }
+  | { type: "heading2" | "heading3"; text: InlineToken[]; id: string }
   | { type: "paragraph"; text: InlineToken[] }
   | { type: "divider" }
   | { type: "callout"; icon: "💡" | "⚠️"; lines: InlineToken[][] }
@@ -38,6 +39,17 @@ export function parseInline(text: string): InlineToken[] {
   return tokens;
 }
 
+export function inlineText(tokens: InlineToken[]): string {
+  return tokens.map((t) => t.content).join("");
+}
+
+/** Anchor id for a heading, from its own text — Japanese text is valid in an
+ *  HTML id/URI fragment, so no transliteration is needed, just stripping
+ *  whitespace and characters that would break an id or a URL fragment. */
+function slugify(text: string): string {
+  return text.trim().replace(/\s+/g, "-").replace(/[#"'<>&]/g, "");
+}
+
 function parseTableRow(line: string): InlineToken[][] {
   return line
     .trim()
@@ -57,6 +69,16 @@ export function parseMarkdown(mdText: string, imageBase: string = ""): Block[] {
   const blocks: Block[] = [];
   let tableBuffer: string[] = [];
   let quoteBuffer: string[] = [];
+
+  // Same heading text appears more than once in a few topics (e.g. repeated
+  // "高進させる要因" subheadings) — dedupe so anchors/TOC links stay unique.
+  const seenIds = new Map<string, number>();
+  const headingId = (text: string): string => {
+    const base = slugify(text) || "section";
+    const count = seenIds.get(base) ?? 0;
+    seenIds.set(base, count + 1);
+    return count === 0 ? base : `${base}-${count + 1}`;
+  };
 
   const flushTable = () => {
     if (tableBuffer.length === 0) return;
@@ -102,9 +124,11 @@ export function parseMarkdown(mdText: string, imageBase: string = ""): Block[] {
     if (!stripped) continue;
 
     if (stripped.startsWith("### ")) {
-      blocks.push({ type: "heading3", text: parseInline(stripped.slice(4)) });
+      const text = stripped.slice(4);
+      blocks.push({ type: "heading3", text: parseInline(text), id: headingId(text) });
     } else if (stripped.startsWith("## ")) {
-      blocks.push({ type: "heading2", text: parseInline(stripped.slice(3)) });
+      const text = stripped.slice(3);
+      blocks.push({ type: "heading2", text: parseInline(text), id: headingId(text) });
     } else if (stripped.startsWith("# ")) {
       blocks.push({ type: "heading1", text: parseInline(stripped.slice(2)) });
     } else if (stripped === "---") {

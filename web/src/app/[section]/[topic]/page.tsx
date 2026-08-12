@@ -7,6 +7,7 @@ import { MarkdownContent } from "@/components/MarkdownContent";
 import { ScrollToMatch } from "@/components/ScrollToMatch";
 import { StarButton } from "@/components/StarButton";
 import { PrintButton } from "@/components/PrintButton";
+import { TableOfContents } from "@/components/TableOfContents";
 
 export function generateStaticParams() {
   return getAllTopicParams();
@@ -53,6 +54,8 @@ export default async function TopicPage(props: PageProps<"/[section]/[topic]">) 
         <StarButton section={sectionSlug} topic={topicSlug} initialStarred={topic.starred} />
         <PrintButton />
       </div>
+
+      <TableOfContents blocks={blocks} />
 
       <article id="topic-article" className="mt-6">
         <MarkdownContent blocks={blocks} />
