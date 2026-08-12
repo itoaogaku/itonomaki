@@ -143,7 +143,11 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   // Rotation uploads the result under a new filename rather than overwriting
   // the original (Xserver's edge cache can hold the old bytes for a URL
   // indefinitely), so it swaps the markdown to the new URL like any other
-  // edit — 保存して公開 is still required for it to reach the site.
+  // edit. When editing an existing topic this is then auto-published right
+  // away (a "rotate" button that silently requires a separate save click is
+  // exactly the kind of step that gets missed); for a not-yet-created topic
+  // (mode === "create") there's no topic to save to yet, so it just updates
+  // the draft and 保存して公開 is still required.
   async function handleRotateImage(index: number) {
     const target = imageLines[index];
     if (!target) return;
@@ -159,7 +163,21 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
       if (!res.ok) throw new Error(data.error ?? "画像の回転に失敗しました");
       const lines = contentText.split("\n");
       lines[target.lineIndex] = `![${target.alt}](${data.url})`;
-      setContentText(lines.join("\n"));
+      const nextContent = lines.join("\n");
+      setContentText(nextContent);
+
+      if (mode === "edit" && topicSlug) {
+        const saveRes = await fetch("/api/edit/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ section: sectionSlug, topic: topicSlug, content: nextContent, isNew: false }),
+        });
+        const saveData = await saveRes.json().catch(() => ({}));
+        if (!saveRes.ok) throw new Error(saveData.error ?? "回転した画像の保存に失敗しました");
+        setMessage({ type: "success", text: "画像を回転して保存しました。数十秒〜数分でサイトに反映されます。" });
+      } else {
+        setMessage({ type: "success", text: "画像を回転しました。「保存して公開」を押すと反映されます。" });
+      }
     } catch (err) {
       setMessage({ type: "error", text: err instanceof Error ? err.message : "画像の回転に失敗しました" });
     } finally {
@@ -388,7 +406,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
         {imageLines.length > 0 && (
           <div className="mt-3 rounded-md border border-[var(--border)] p-3">
             <p className="text-xs text-[var(--muted)]">
-              ドラッグして写真の順番を入れ替えられます。回転ボタンで90度ずつ回転できます(並び替え・回転どちらも「保存して公開」を押すまでサイトには反映されません)。
+              ドラッグして写真の順番を入れ替えられます(反映には「保存して公開」を押してください)。回転ボタンは90度ずつ回転し、既存トピックの編集中はボタンを押すとすぐに保存・公開されます。
             </p>
             <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
               {imageLines.map((im, i) => (
