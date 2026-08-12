@@ -1,0 +1,85 @@
+import { NextResponse } from "next/server";
+import { listSharedRecordings, uploadSharedRecording, deleteSharedRecording } from "@/lib/ftpAudio";
+
+// Called cross-origin from the stopwatch app (a separate static site, and
+// sometimes opened straight from file://, per its README) — not from a page
+// served by this Next.js app. There's no session/cookie to share across
+// origins, so writes are gated by a bearer token instead, and CORS is left
+// wide open (safe here since GET is public read-only and POST/DELETE are
+// already protected by the token check, not by origin).
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // a 30s voice clip is well under 1MB
+
+function corsHeaders(): HeadersInit {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+function json(body: unknown, init?: ResponseInit) {
+  return NextResponse.json(body, { ...init, headers: { ...corsHeaders(), ...init?.headers } });
+}
+
+function requireAudioToken(request: Request): boolean {
+  const expected = process.env.STRETCH_AUDIO_TOKEN?.trim();
+  if (!expected) return false; // unconfigured = writes disabled, not "anyone can write"
+  const header = request.headers.get("authorization") ?? "";
+  const provided = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
+  return provided === expected;
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: corsHeaders() });
+}
+
+export async function GET() {
+  try {
+    const items = await listSharedRecordings();
+    return json({ items });
+  } catch (err) {
+    return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  if (!requireAudioToken(request)) {
+    return json({ error: "認証が必要です" }, { status: 401 });
+  }
+
+  const form = await request.formData().catch(() => null);
+  const file = form?.get("file");
+  const text = form?.get("text");
+  if (!(file instanceof File) || typeof text !== "string" || !text.trim()) {
+    return json({ error: "file と text の両方が必要です" }, { status: 400 });
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return json({ error: "ファイルサイズが大きすぎます(5MBまで)" }, { status: 400 });
+  }
+
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const url = await uploadSharedRecording(buffer, text, file.type || "audio/webm");
+    return json({ url });
+  } catch (err) {
+    return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!requireAudioToken(request)) {
+    return json({ error: "認証が必要です" }, { status: 401 });
+  }
+
+  const text = new URL(request.url).searchParams.get("text");
+  if (!text) {
+    return json({ error: "text が必要です" }, { status: 400 });
+  }
+
+  try {
+    await deleteSharedRecording(text);
+    return json({ ok: true });
+  } catch (err) {
+    return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+  }
+}

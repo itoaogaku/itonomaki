@@ -39,12 +39,22 @@ http://localhost:3000 を開きます。
 
 必要な環境変数(`.env.example` 参照): `FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`。未設定の場合、写真アップロードのみ失敗します(それ以外の編集機能には影響しません)。
 
+## ストップウォッチアプリ向け音声API(`/api/stretch-audio`)
+
+別リポジトリ `itoaogaku/stopwatch` のストレッチタイマーが、セリフの録音をチームで共有するために呼び出すAPIです。このNext.jsアプリのページとは無関係で、ストップウォッチ側のJavaScriptからこのドメインへ直接(クロスオリジンで)fetchされます。
+
+- `GET /api/stretch-audio` — 現在共有されている録音の一覧を `{ items: [{ text, url }, ...] }` で返します(認証不要、誰でも取得・再生可能)
+- `POST /api/stretch-audio` — `multipart/form-data` で `file`(音声)と `text`(セリフ)を受け取り、写真と同じFTP経由でXserverの `library-images/stretch-audio/` に保存します。ヘッダー `Authorization: Bearer <STRETCH_AUDIO_TOKEN>` が必要です。同じ `text` への再アップロードは既存ファイルを置き換えます
+- `DELETE /api/stretch-audio?text=...` — 指定したセリフの共有録音を削除します。こちらも `Authorization` ヘッダーが必要です
+
+必要な環境変数(`.env.example` 参照): `STRETCH_AUDIO_TOKEN`(書き込み保護用の合言葉。未設定の場合、一覧取得はできますがアップロード・削除は失敗します)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(上記の写真アップロードと共通)。
+
 ## Vercel へのデプロイ
 
 1. [vercel.com](https://vercel.com) で GitHub リポジトリ `itoaogaku/itonomaki` をインポート
 2. プロジェクト設定で **Root Directory** を `web` に設定
 3. Framework Preset は Next.js が自動検出されます
-4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD`(限定公開にする場合)、`EDIT_PASSWORD` / `GITHUB_TOKEN`(ウェブ編集機能を使う場合)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(写真アップロード機能を使う場合)を設定
+4. **Environment Variables** に `SITE_USER` / `SITE_PASSWORD`(限定公開にする場合)、`EDIT_PASSWORD` / `GITHUB_TOKEN`(ウェブ編集機能を使う場合)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(写真アップロード・ストップウォッチ音声共有機能を使う場合)、`STRETCH_AUDIO_TOKEN`(ストップウォッチ音声共有のアップロード・削除を有効にする場合)を設定
 5. Deploy
 
 以降は `claude/trainer-knowledge-notion-xg5660` ブランチ(または本番運用するブランチ)に push するたびに自動で再デプロイされます。
