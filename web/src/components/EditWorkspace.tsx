@@ -113,6 +113,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [rotatingIdx, setRotatingIdx] = useState<number | null>(null);
+  const [justRotatedIdx, setJustRotatedIdx] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const imageLines = useMemo(() => parseImageLines(contentText), [contentText]);
@@ -178,6 +179,11 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
       } else {
         setMessage({ type: "success", text: "画像を回転しました。「保存して公開」を押すと反映されます。" });
       }
+      // A brief on-thumbnail checkmark, since the grid can be tall enough
+      // (100+ photos) that the message banner further down the page is
+      // easy to miss entirely.
+      setJustRotatedIdx(index);
+      setTimeout(() => setJustRotatedIdx((cur) => (cur === index ? null : cur)), 2000);
     } catch (err) {
       setMessage({ type: "error", text: err instanceof Error ? err.message : "画像の回転に失敗しました" });
     } finally {
@@ -408,7 +414,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
             <p className="text-xs text-[var(--muted)]">
               ドラッグして写真の順番を入れ替えられます(反映には「保存して公開」を押してください)。回転ボタンは90度ずつ回転し、既存トピックの編集中はボタンを押すとすぐに保存・公開されます。
             </p>
-            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+            <div className="mt-2 grid max-h-96 grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4 md:grid-cols-6">
               {imageLines.map((im, i) => (
                 <div
                   key={`${im.url}-${i}`}
@@ -422,6 +428,11 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- remote-hosted library photo, no need for next/image optimization */}
                   <img src={im.url} alt="" className="aspect-square w-full object-cover" />
+                  {justRotatedIdx === i && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-emerald-600/80 text-2xl text-white">
+                      ✓
+                    </div>
+                  )}
                   <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/55 px-1.5 py-0.5">
                     <span className="text-[10px] text-white">{i + 1}</span>
                     <button
@@ -466,6 +477,19 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
           </p>
         )}
       </div>
+
+      {/* Fixed so it's visible immediately regardless of scroll position —
+          the page can be very long (e.g. 100+ photo thumbnails above the
+          textarea), and the inline message above is easy to never see. */}
+      {message && (
+        <div
+          className={`fixed inset-x-0 bottom-4 z-50 mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-md px-4 py-2 text-sm text-white shadow-lg ${
+            message.type === "success" ? "bg-emerald-600" : "bg-red-600"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
     </div>
   );
 }
