@@ -3,7 +3,7 @@
 // deployment size limits, and reuses hosting the trainer already pays for).
 import { Client } from "basic-ftp";
 import sharp from "sharp";
-import { Readable } from "node:stream";
+import { PassThrough, Readable } from "node:stream";
 
 // The FTP account itself is scoped to library-images/ as its login root
 // (configured on the Xserver side), so uploads land directly there — no
@@ -71,4 +71,42 @@ export async function uploadImage(fileBuffer: Buffer, originalName: string): Pro
   }
 
   return `${PUBLIC_BASE_URL}/${filename}`;
+}
+
+async function downloadBuffer(client: Client, remotePath: string): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+  const stream = new PassThrough();
+  stream.on("data", (chunk: Buffer) => chunks.push(chunk));
+  await client.downloadTo(stream, remotePath);
+  return Buffer.concat(chunks);
+}
+
+/** Rotates an already-uploaded image 90° clockwise in place (same filename/URL),
+ *  so pages referencing it don't need any markdown changes. */
+export async function rotateImage(url: string): Promise<void> {
+  const prefix = `${PUBLIC_BASE_URL}/`;
+  if (!url.startsWith(prefix)) {
+    throw new Error("この画像はサーバー上の写真ライブラリのものではないため回転できません");
+  }
+  const filename = url.slice(prefix.length);
+  if (!filename || filename.includes("/")) {
+    throw new Error("画像ファイル名が不正です");
+  }
+
+  const host = envOrThrow("FTP_HOST");
+  const user = envOrThrow("FTP_USER");
+  const password = envOrThrow("FTP_PASSWORD");
+
+  const client = new Client(15_000);
+  try {
+    await client.access({ host, user, password, secure: true });
+    const original = await downloadBuffer(client, filename);
+    const rotated = await sharp(original).rotate(90).jpeg({ quality: JPEG_QUALITY }).toBuffer();
+    await client.uploadFrom(Readable.from(rotated), filename);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    throw new Error(`画像の回転に失敗しました(${detail})。時間をおいて再度お試しください。`);
+  } finally {
+    client.close();
+  }
 }

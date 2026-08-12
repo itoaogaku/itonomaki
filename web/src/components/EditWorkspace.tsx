@@ -1,12 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Topic = { slug: string; title: string };
 type Section = { slug: string; title: string; topics: Topic[] };
 
 const fieldClass =
   "mt-1 block w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--fg)]";
+
+type ImageLine = { lineIndex: number; alt: string; url: string };
+
+// Only whole-line images (`![alt](url)` with nothing else on the line) are
+// treated as reorderable — this covers photo-gallery style topics without
+// risking mangling images that sit inline within a paragraph.
+const IMAGE_LINE_PATTERN = /^!\[([^\]]*)\]\(([^)]+)\)$/;
+
+function parseImageLines(text: string): ImageLine[] {
+  const result: ImageLine[] = [];
+  text.split("\n").forEach((line, lineIndex) => {
+    const match = IMAGE_LINE_PATTERN.exec(line.trim());
+    if (match) result.push({ lineIndex, alt: match[1], url: match[2] });
+  });
+  return result;
+}
 
 export function EditWorkspace({ sections }: { sections: Section[] }) {
   const [authChecked, setAuthChecked] = useState(false);
@@ -95,7 +111,56 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [rotatingUrl, setRotatingUrl] = useState<string | null>(null);
+  const [imgVersion, setImgVersion] = useState<Record<string, number>>({});
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const imageLines = useMemo(() => parseImageLines(contentText), [contentText]);
+
+  // Rewrites only the line slots that already held an image, in their new
+  // order — leaves any surrounding text untouched.
+  function reorderImages(newOrder: ImageLine[]) {
+    const lines = contentText.split("\n");
+    const slots = imageLines.map((im) => im.lineIndex);
+    newOrder.forEach((im, i) => {
+      lines[slots[i]] = `![${im.alt}](${im.url})`;
+    });
+    setContentText(lines.join("\n"));
+  }
+
+  function handleImageDrop(targetIdx: number) {
+    if (draggedIdx === null || draggedIdx === targetIdx) {
+      setDraggedIdx(null);
+      return;
+    }
+    const next = [...imageLines];
+    const [moved] = next.splice(draggedIdx, 1);
+    next.splice(targetIdx, 0, moved);
+    reorderImages(next);
+    setDraggedIdx(null);
+  }
+
+  // Rotates the file in place on the server (same filename/URL), so this
+  // takes effect immediately — no need to press 保存 for the rotation itself.
+  async function handleRotateImage(url: string) {
+    setRotatingUrl(url);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/edit/rotate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "画像の回転に失敗しました");
+      setImgVersion((prev) => ({ ...prev, [url]: Date.now() }));
+    } catch (err) {
+      setMessage({ type: "error", text: err instanceof Error ? err.message : "画像の回転に失敗しました" });
+    } finally {
+      setRotatingUrl(null);
+    }
+  }
 
   function insertAtCursor(text: string) {
     const el = textareaRef.current;
@@ -314,6 +379,48 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
             />
           </label>
         </div>
+
+        {imageLines.length > 0 && (
+          <div className="mt-3 rounded-md border border-[var(--border)] p-3">
+            <p className="text-xs text-[var(--muted)]">
+              ドラッグして写真の順番を入れ替えられます。回転ボタンは押すとすぐにサーバー上の画像に反映されます(並び替えは「保存して公開」を押すまで反映されません)。
+            </p>
+            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+              {imageLines.map((im, i) => (
+                <div
+                  key={`${im.url}-${i}`}
+                  draggable
+                  onDragStart={() => setDraggedIdx(i)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => handleImageDrop(i)}
+                  className={`group relative cursor-move overflow-hidden rounded-md border ${
+                    draggedIdx === i ? "border-[var(--accent)]" : "border-[var(--border)]"
+                  }`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- remote-hosted library photo, no need for next/image optimization */}
+                  <img
+                    src={`${im.url}${imgVersion[im.url] ? `?v=${imgVersion[im.url]}` : ""}`}
+                    alt=""
+                    className="aspect-square w-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/55 px-1.5 py-0.5">
+                    <span className="text-[10px] text-white">{i + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRotateImage(im.url)}
+                      disabled={rotatingUrl === im.url}
+                      aria-label="90度回転"
+                      className="text-xs text-white disabled:opacity-50"
+                    >
+                      {rotatingUrl === im.url ? "..." : "↻"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <textarea
           ref={textareaRef}
           value={contentText}
