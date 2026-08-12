@@ -21,6 +21,19 @@ export function Inline({ tokens }: { tokens: InlineToken[] }) {
             </code>
           );
         }
+        if (token.type === "link") {
+          return (
+            <a
+              key={i}
+              href={token.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--accent)] underline underline-offset-2 hover:no-underline"
+            >
+              {token.content}
+            </a>
+          );
+        }
         return <span key={i}>{token.content}</span>;
       })}
     </>

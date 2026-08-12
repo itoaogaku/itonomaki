@@ -23,6 +23,38 @@ function envOrThrow(name: string): string {
   return value;
 }
 
+// ASCII-only: FTP has no guaranteed charset for filenames, and this host
+// has previously stored non-ASCII (Japanese) filenames under different
+// bytes than what the web server expects, producing 404s for files that
+// genuinely exist. Stripping to ASCII sidesteps that entirely.
+function sanitizeStem(originalName: string): string {
+  return originalName
+    .replace(/\.[^.]+$/, "")
+    .replace(/[^\w-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+async function uploadBuffer(buffer: Buffer, filename: string): Promise<void> {
+  // Read config env vars first so a missing/misconfigured var reports
+  // clearly, rather than being swallowed into the generic network-error
+  // message below (which suggests retrying — pointless for a config error).
+  const host = envOrThrow("FTP_HOST");
+  const user = envOrThrow("FTP_USER");
+  const password = envOrThrow("FTP_PASSWORD");
+
+  const client = new Client(15_000); // fail fast rather than leave the editor spinning
+  try {
+    await client.access({ host, user, password, secure: true });
+    await client.uploadFrom(Readable.from(buffer), filename);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    throw new Error(`サーバーへのアップロードに失敗しました(${detail})。時間をおいて再度お試しください。`);
+  } finally {
+    client.close();
+  }
+}
+
 /** Resizes/re-encodes an uploaded image so large phone photos don't eat
  *  into hosting space, then uploads it over FTP and returns its public URL. */
 export async function uploadImage(fileBuffer: Buffer, originalName: string): Promise<string> {
@@ -41,35 +73,17 @@ export async function uploadImage(fileBuffer: Buffer, originalName: string): Pro
     );
   }
 
-  // ASCII-only: FTP has no guaranteed charset for filenames, and this host
-  // has previously stored non-ASCII (Japanese) filenames under different
-  // bytes than what the web server expects, producing 404s for files that
-  // genuinely exist. Stripping to ASCII sidesteps that entirely.
-  const safeStem = originalName
-    .replace(/\.[^.]+$/, "")
-    .replace(/[^\w-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
-  const filename = `${Date.now()}-${safeStem || "image"}.jpg`;
+  const filename = `${Date.now()}-${sanitizeStem(originalName) || "image"}.jpg`;
+  await uploadBuffer(compressed, filename);
+  return `${PUBLIC_BASE_URL}/${filename}`;
+}
 
-  // Read config env vars first so a missing/misconfigured var reports
-  // clearly, rather than being swallowed into the generic network-error
-  // message below (which suggests retrying — pointless for a config error).
-  const host = envOrThrow("FTP_HOST");
-  const user = envOrThrow("FTP_USER");
-  const password = envOrThrow("FTP_PASSWORD");
-
-  const client = new Client(15_000); // fail fast rather than leave the editor spinning
-  try {
-    await client.access({ host, user, password, secure: true });
-    await client.uploadFrom(Readable.from(compressed), filename);
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
-    throw new Error(`サーバーへのアップロードに失敗しました(${detail})。時間をおいて再度お試しください。`);
-  } finally {
-    client.close();
-  }
-
+/** Uploads a PDF as-is (no conversion) and returns its public URL. Lands in
+ *  the same library-images/ folder as photos — it's just a directory on the
+ *  FTP account, not actually restricted to images. */
+export async function uploadPdf(fileBuffer: Buffer, originalName: string): Promise<string> {
+  const filename = `${Date.now()}-${sanitizeStem(originalName) || "file"}.pdf`;
+  await uploadBuffer(fileBuffer, filename);
   return `${PUBLIC_BASE_URL}/${filename}`;
 }
 

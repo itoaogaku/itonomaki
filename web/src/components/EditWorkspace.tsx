@@ -124,6 +124,8 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [pdfUploadProgress, setPdfUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [rotatingIdx, setRotatingIdx] = useState<number | null>(null);
@@ -266,6 +268,35 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
     } finally {
       setUploadingImage(false);
       setUploadProgress(null);
+    }
+  }
+
+  async function handlePdfUpload(files: FileList | File[]) {
+    const fileArray = Array.from(files);
+    if (fileArray.length === 0) return;
+    setUploadingPdf(true);
+    setMessage(null);
+    let uploaded = 0;
+    try {
+      for (const file of fileArray) {
+        setPdfUploadProgress({ done: uploaded, total: fileArray.length });
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/edit/upload-pdf", { method: "POST", body: formData });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(`${file.name}: ${data.error ?? "PDFのアップロードに失敗しました"}`);
+        insertAtCursor(`[${data.name ?? file.name}](${data.url})\n`);
+        uploaded += 1;
+      }
+      if (fileArray.length > 1) {
+        setMessage({ type: "success", text: `${fileArray.length}件のPDFをアップロードしました` });
+      }
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : "PDFのアップロードに失敗しました";
+      setMessage({ type: "error", text: uploaded > 0 ? `${uploaded}件アップロード後にエラー: ${detail}` : detail });
+    } finally {
+      setUploadingPdf(false);
+      setPdfUploadProgress(null);
     }
   }
 
@@ -412,27 +443,46 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
       <div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <label className="text-sm font-medium text-[var(--fg)]">本文(Markdown)</label>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--accent)]">
-            {uploadingImage
-              ? `アップロード中... (${uploadProgress ? uploadProgress.done + 1 : 1}/${uploadProgress?.total ?? 1})`
-              : "📷 写真を追加(複数選択可)"}
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              disabled={uploadingImage}
-              className="hidden"
-              onChange={(e) => {
-                // Detach from the live FileList before resetting the input
-                // below — resetting .value clears the FileList in place in
-                // some browsers, which would silently empty this reference
-                // too if it weren't copied out first.
-                const files = Array.from(e.target.files ?? []);
-                e.target.value = "";
-                if (files.length > 0) handleImageUpload(files);
-              }}
-            />
-          </label>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--accent)]">
+              {uploadingImage
+                ? `アップロード中... (${uploadProgress ? uploadProgress.done + 1 : 1}/${uploadProgress?.total ?? 1})`
+                : "📷 写真を追加(複数選択可)"}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                disabled={uploadingImage}
+                className="hidden"
+                onChange={(e) => {
+                  // Detach from the live FileList before resetting the input
+                  // below — resetting .value clears the FileList in place in
+                  // some browsers, which would silently empty this reference
+                  // too if it weren't copied out first.
+                  const files = Array.from(e.target.files ?? []);
+                  e.target.value = "";
+                  if (files.length > 0) handleImageUpload(files);
+                }}
+              />
+            </label>
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--accent)]">
+              {uploadingPdf
+                ? `アップロード中... (${pdfUploadProgress ? pdfUploadProgress.done + 1 : 1}/${pdfUploadProgress?.total ?? 1})`
+                : "📄 PDFを追加(複数選択可)"}
+              <input
+                type="file"
+                accept="application/pdf"
+                multiple
+                disabled={uploadingPdf}
+                className="hidden"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? []);
+                  e.target.value = "";
+                  if (files.length > 0) handlePdfUpload(files);
+                }}
+              />
+            </label>
+          </div>
         </div>
 
         {imageLines.length > 0 && (

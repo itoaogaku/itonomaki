@@ -6,7 +6,8 @@
 export type InlineToken =
   | { type: "text"; content: string }
   | { type: "bold"; content: string }
-  | { type: "code"; content: string };
+  | { type: "code"; content: string }
+  | { type: "link"; content: string; href: string };
 
 export type Block =
   | { type: "heading1"; text: InlineToken[] }
@@ -20,8 +21,9 @@ export type Block =
   | { type: "table"; header: InlineToken[][]; rows: InlineToken[][][] }
   | { type: "image"; src: string; alt: string };
 
-const INLINE_PATTERN = /(\*\*.+?\*\*|`.+?`)/;
+const INLINE_PATTERN = /(\*\*.+?\*\*|`.+?`|\[[^\]]*\]\([^)]*\))/;
 const IMAGE_PATTERN = /^!\[(.*?)\]\((.*?)\)$/;
+const LINK_PATTERN = /^\[([^\]]*)\]\(([^)]*)\)$/;
 
 export function parseInline(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
@@ -32,7 +34,12 @@ export function parseInline(text: string): InlineToken[] {
     } else if (part.startsWith("`") && part.endsWith("`")) {
       tokens.push({ type: "code", content: part.slice(1, -1) });
     } else {
-      tokens.push({ type: "text", content: part });
+      const linkMatch = LINK_PATTERN.exec(part);
+      if (linkMatch) {
+        tokens.push({ type: "link", content: linkMatch[1], href: linkMatch[2] });
+      } else {
+        tokens.push({ type: "text", content: part });
+      }
     }
   }
   if (tokens.length === 0) tokens.push({ type: "text", content: "" });
