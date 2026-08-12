@@ -41,14 +41,16 @@ http://localhost:3000 を開きます。
 
 ## ストップウォッチアプリ向け音声API(`/api/stretch-audio`)
 
-別リポジトリ `itoaogaku/stopwatch` のストレッチタイマーが、セリフの録音をチームで共有するために呼び出すAPIです。このNext.jsアプリのページとは無関係で、ストップウォッチ側のJavaScriptからこのドメインへ直接(クロスオリジンで)fetchされます。
+別リポジトリ `itoaogaku/stopwatch` のストレッチ・補強タイマーが、セリフの録音をチームで共有するために呼び出すAPIです。このNext.jsアプリのページとは無関係で、ストップウォッチ側のJavaScriptからこのドメインへ直接(クロスオリジンで)fetchされます。
 
-録音は名前付きの「セット」(例:コーチごとの読み上げ一式)にまとめられます。元々(セット機能導入前)の実装はセットの概念がなく `library-images/stretch-audio/` 直下にセリフごとのファイルを1つずつ置くだけだったため、その挙動をそのまま「デフォルト(これまでの録音)」という名前の暗黙のセットとして扱い、`setName` を省略/未指定だとこのセットとして読み書きします(そのため既存の録音は無変換でそのまま使えます)。それ以外のセット名を指定すると `library-images/stretch-audio/<セット名>/` 以下に保存されます。
+ストップウォッチ側にはセリフを読み上げるタイマーが「ストレッチ」「補強」の2つ独立してあり、録音は必ず `category`(`stretch` または `reinforce`、省略時は `stretch`)で区別されます。同じ「反対」という言葉でもストレッチ用と補強用は別の録音として扱われ、混ざりません。各カテゴリの中でさらに、名前付きの「セット」(例:コーチごとの読み上げ一式)にまとめられます。
 
-- `GET /api/stretch-audio` — 現在共有されている録音の一覧を `{ items: [{ setName, text, url }, ...] }` で返します(認証不要、誰でも取得・再生可能)。セット一覧はこの `items` から重複除去して求められます
-- `POST /api/stretch-audio` — `multipart/form-data` で `file`(音声)、`text`(セリフ)、`setName`(セット名、省略時はデフォルトセット)を受け取り、写真と同じFTP経由でXserverに保存します。ヘッダー `Authorization: Bearer <STRETCH_AUDIO_TOKEN>` が必要です。同じ `setName`+`text` への再アップロードは既存ファイルを置き換えます
-- `DELETE /api/stretch-audio?setName=...&text=...` — 指定したセットの、指定したセリフの録音を削除します
-- `DELETE /api/stretch-audio?setName=...`(`text`省略) — 指定したセット全体(その中の全セリフの録音)を削除します
+元々(カテゴリ・セット機能導入前)の実装はどちらの概念もなく `library-images/stretch-audio/` 直下にセリフごとのファイルを1つずつ置くだけだったため、その挙動をそのまま `category: "stretch"` の「デフォルト(これまでの録音)」という暗黙のセットとして扱い、`category`/`setName` を省略/未指定だとこの位置として読み書きします(そのため既存の録音は無変換でそのまま使えます)。それ以外は `library-images/stretch-audio/<セット名>/`(stretchの他セット)、`library-images/stretch-audio/reinforce/`(補強のデフォルトセット)、`library-images/stretch-audio/reinforce/<セット名>/`(補強の他セット)に保存されます(`reinforce` はこの用途で予約されており、stretchのセット名としては使えません)。
+
+- `GET /api/stretch-audio` — 現在共有されている録音の一覧を `{ items: [{ category, setName, text, url }, ...] }` で返します(認証不要、誰でも取得・再生可能)。カテゴリ・セット一覧はこの `items` から重複除去して求められます
+- `POST /api/stretch-audio` — `multipart/form-data` で `file`(音声)、`text`(セリフ)、`category`(`stretch`/`reinforce`、省略時は`stretch`)、`setName`(セット名、省略時はデフォルトセット)を受け取り、写真と同じFTP経由でXserverに保存します。ヘッダー `Authorization: Bearer <STRETCH_AUDIO_TOKEN>` が必要です。同じ `category`+`setName`+`text` への再アップロードは既存ファイルを置き換えます
+- `DELETE /api/stretch-audio?category=...&setName=...&text=...` — 指定したカテゴリ・セットの、指定したセリフの録音を削除します
+- `DELETE /api/stretch-audio?category=...&setName=...`(`text`省略) — 指定したカテゴリ・セット全体(その中の全セリフの録音)を削除します
 - 上記2つのDELETEはどちらも `Authorization` ヘッダーが必要です
 
 必要な環境変数(`.env.example` 参照): `STRETCH_AUDIO_TOKEN`(書き込み保護用の合言葉。未設定の場合、一覧取得はできますがアップロード・削除は失敗します)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(上記の写真アップロードと共通)。

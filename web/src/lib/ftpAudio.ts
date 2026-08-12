@@ -1,24 +1,39 @@
-// Stores the stopwatch app's team-shared stretch-cue voice recordings on the
+// Stores the stopwatch app's team-shared cue voice recordings on the
 // trainer's existing Xserver hosting via FTP — same account/credentials as
 // ftpImages.ts, but under its own stretch-audio/ subdirectory so the two
 // don't mix.
 //
-// Recordings are grouped into named "sets" (e.g. a coach's own full set of
-// cue readings) so a team can keep several complete recordings side by side
-// and pick which one to actually play back. The original (pre-sets) design
-// stored one flat file per cue text directly under stretch-audio/; that
-// layout is kept as-is and treated as the implicit DEFAULT_SET_NAME set, so
-// recordings made before sets existed keep working with no migration. Any
-// other set gets its own stretch-audio/<encoded set name>/ subdirectory.
-// Within a set, one file per distinct cue text; re-uploading the same text
-// replaces whatever was there before (regardless of audio format), so the
-// listing never accumulates stale duplicates for a cue that's been
-// re-recorded.
+// The stopwatch app has two independent timers that each read cues aloud —
+// ストレッチ (stretch) and 補強 (reinforce) — and their recordings must not
+// mix (a coach's "反対" for stretch is a different recording from their
+// "反対" for reinforce, even though the two are the same word). So every
+// recording belongs to a (category, set, cue text) triple: "category" is
+// "stretch" or "reinforce", and "set" is a named collection within that
+// category (e.g. a coach's own full set of cue readings) so a team can keep
+// several complete recordings side by side and pick which one to actually
+// play back.
+//
+// The original (pre-category, pre-set) design stored one flat file per cue
+// text directly under stretch-audio/; that layout is kept as-is and treated
+// as the implicit (category: "stretch", set: DEFAULT_SET_NAME) location, so
+// recordings made before either feature existed keep working with no
+// migration — they were always stretch-only anyway, since 補強 didn't exist
+// yet. Every other (category, set) pair gets its own subdirectory: stretch's
+// other sets live at stretch-audio/<set>/, and every reinforce set (default
+// included) lives at stretch-audio/reinforce/<set>/ — "reinforce" is
+// therefore a reserved name that can't also be used as a custom stretch set
+// name (an acceptable, unlikely-to-matter edge case).
+//
+// Within a (category, set), one file per distinct cue text; re-uploading the
+// same text replaces whatever was there before (regardless of audio
+// format), so the listing never accumulates stale duplicates for a cue
+// that's been re-recorded.
 import { Client, FileInfo } from "basic-ftp";
 import { Readable } from "node:stream";
 
 const AUDIO_DIR = "stretch-audio";
 const PUBLIC_BASE_URL = `https://acc-pg.com/library-images/${AUDIO_DIR}`;
+const REINFORCE_DIR_NAME = "reinforce";
 
 // Must match the stopwatch app's own DEFAULT_SET_NAME constant exactly —
 // it's how the client recognizes "this is the flat legacy layout".
@@ -75,64 +90,77 @@ function stemOf(filename: string): string {
   return dotIndex === -1 ? filename : filename.slice(0, dotIndex);
 }
 
-function dirPathFor(setName: string): string {
-  return setName === DEFAULT_SET_NAME ? AUDIO_DIR : `${AUDIO_DIR}/${encodeStem(setName)}`;
+function categoryDir(category: string): string {
+  return category === "stretch" ? AUDIO_DIR : `${AUDIO_DIR}/${REINFORCE_DIR_NAME}`;
 }
 
-function publicUrlFor(setName: string, filename: string): string {
-  return setName === DEFAULT_SET_NAME ? `${PUBLIC_BASE_URL}/${filename}` : `${PUBLIC_BASE_URL}/${encodeStem(setName)}/${filename}`;
+function dirPathFor(category: string, setName: string): string {
+  const base = categoryDir(category);
+  return setName === DEFAULT_SET_NAME ? base : `${base}/${encodeStem(setName)}`;
+}
+
+function publicUrlFor(category: string, setName: string, filename: string): string {
+  const base = category === "stretch" ? PUBLIC_BASE_URL : `${PUBLIC_BASE_URL}/${REINFORCE_DIR_NAME}`;
+  return setName === DEFAULT_SET_NAME ? `${base}/${filename}` : `${base}/${encodeStem(setName)}/${filename}`;
 }
 
 export interface SharedRecording {
+  category: string;
   setName: string;
   text: string;
   url: string;
 }
 
-/** Lists every cue currently shared on the server, across every set. An
- *  empty list (not an error) just means nobody has uploaded anything yet —
- *  the directory may not exist at all in that case. */
+/** Lists every cue currently shared on the server, across every category and
+ *  set. An empty list (not an error) just means nobody has uploaded anything
+ *  yet — the directory may not exist at all in that case. */
 export async function listSharedRecordings(): Promise<SharedRecording[]> {
   return withClient(async (client) => {
-    let topEntries: FileInfo[];
-    try {
-      topEntries = await client.list(AUDIO_DIR);
-    } catch {
-      return [];
-    }
-
     const results: SharedRecording[] = [];
-    for (const entry of topEntries) {
-      if (entry.isFile) {
-        results.push({
-          setName: DEFAULT_SET_NAME,
-          text: decodeStem(stemOf(entry.name)),
-          url: publicUrlFor(DEFAULT_SET_NAME, entry.name),
-        });
-      } else if (entry.isDirectory) {
-        const setName = decodeStem(entry.name);
-        const subEntries = await client.list(`${AUDIO_DIR}/${entry.name}`).catch(() => [] as FileInfo[]);
-        for (const sub of subEntries) {
-          if (!sub.isFile) continue;
+
+    async function listCategory(category: string, dir: string) {
+      const entries = await client.list(dir).catch(() => [] as FileInfo[]);
+      for (const entry of entries) {
+        if (entry.isFile) {
           results.push({
-            setName,
-            text: decodeStem(stemOf(sub.name)),
-            url: publicUrlFor(setName, sub.name),
+            category,
+            setName: DEFAULT_SET_NAME,
+            text: decodeStem(stemOf(entry.name)),
+            url: publicUrlFor(category, DEFAULT_SET_NAME, entry.name),
           });
+        } else if (entry.isDirectory) {
+          if (category === "stretch" && entry.name === REINFORCE_DIR_NAME) {
+            await listCategory("reinforce", `${dir}/${entry.name}`);
+            continue;
+          }
+          const setName = decodeStem(entry.name);
+          const subEntries = await client.list(`${dir}/${entry.name}`).catch(() => [] as FileInfo[]);
+          for (const sub of subEntries) {
+            if (!sub.isFile) continue;
+            results.push({
+              category,
+              setName,
+              text: decodeStem(stemOf(sub.name)),
+              url: publicUrlFor(category, setName, sub.name),
+            });
+          }
         }
       }
     }
+
+    await listCategory("stretch", AUDIO_DIR);
     return results;
   });
 }
 
-/** Uploads a recording for the given (set, cue text) pair, replacing any
- *  existing recording(s) for that same exact pair (even ones saved under a
- *  different audio format previously). Returns the new public URL. */
-export async function uploadSharedRecording(buffer: Buffer, setName: string, text: string, mimeType: string): Promise<string> {
+/** Uploads a recording for the given (category, set, cue text) triple,
+ *  replacing any existing recording(s) for that same exact triple (even ones
+ *  saved under a different audio format previously). Returns the new public
+ *  URL. */
+export async function uploadSharedRecording(buffer: Buffer, category: string, setName: string, text: string, mimeType: string): Promise<string> {
   const stem = encodeStem(text);
   const filename = `${stem}.${extensionForMimeType(mimeType)}`;
-  const dirPath = dirPathFor(setName);
+  const dirPath = dirPathFor(category, setName);
 
   return withClient(async (client) => {
     await client.ensureDir(dirPath); // creates every needed level and cds into it
@@ -143,15 +171,15 @@ export async function uploadSharedRecording(buffer: Buffer, setName: string, tex
       }
     }
     await client.uploadFrom(Readable.from(buffer), filename);
-    return publicUrlFor(setName, filename);
+    return publicUrlFor(category, setName, filename);
   });
 }
 
-/** Deletes whatever recording(s) match the given (set, cue text) pair,
- *  regardless of audio format extension. */
-export async function deleteSharedRecording(setName: string, text: string): Promise<void> {
+/** Deletes whatever recording(s) match the given (category, set, cue text)
+ *  triple, regardless of audio format extension. */
+export async function deleteSharedRecording(category: string, setName: string, text: string): Promise<void> {
   const stem = encodeStem(text);
-  const dirPath = dirPathFor(setName);
+  const dirPath = dirPathFor(category, setName);
   await withClient(async (client) => {
     const entries = await client.list(dirPath).catch(() => [] as FileInfo[]);
     for (const entry of entries) {
@@ -162,21 +190,23 @@ export async function deleteSharedRecording(setName: string, text: string): Prom
   });
 }
 
-/** Deletes an entire set. For the default set (the flat legacy layout) this
- *  removes every file directly under stretch-audio/ without touching other
- *  sets' subdirectories; for any other set it removes its whole
- *  subdirectory. */
-export async function deleteSharedSet(setName: string): Promise<void> {
+/** Deletes an entire (category, set). For a category's default set (the
+ *  flat legacy layout for stretch, or the equivalent flat layout directly
+ *  under stretch-audio/reinforce/ for reinforce) this removes every file
+ *  directly under that category's directory without touching other sets'
+ *  subdirectories; for any other set it removes its whole subdirectory. */
+export async function deleteSharedSet(category: string, setName: string): Promise<void> {
   if (setName === DEFAULT_SET_NAME) {
+    const dir = categoryDir(category);
     await withClient(async (client) => {
-      const entries = await client.list(AUDIO_DIR).catch(() => [] as FileInfo[]);
+      const entries = await client.list(dir).catch(() => [] as FileInfo[]);
       for (const entry of entries) {
-        if (entry.isFile) await client.remove(`${AUDIO_DIR}/${entry.name}`).catch(() => {});
+        if (entry.isFile) await client.remove(`${dir}/${entry.name}`).catch(() => {});
       }
     });
     return;
   }
   await withClient(async (client) => {
-    await client.removeDir(dirPathFor(setName)).catch(() => {});
+    await client.removeDir(dirPathFor(category, setName)).catch(() => {});
   });
 }

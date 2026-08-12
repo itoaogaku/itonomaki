@@ -8,6 +8,7 @@ import { listSharedRecordings, uploadSharedRecording, deleteSharedRecording, del
 // wide open (safe here since GET is public read-only and POST/DELETE are
 // already protected by the token check, not by origin).
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // a 30s voice clip is well under 1MB
+const DEFAULT_CATEGORY = "stretch"; // matches the stopwatch app's older, category-less recordings
 
 function corsHeaders(): HeadersInit {
   return {
@@ -52,6 +53,8 @@ export async function POST(request: Request) {
   const text = form?.get("text");
   const setNameRaw = form?.get("setName");
   const setName = typeof setNameRaw === "string" && setNameRaw.trim() ? setNameRaw.trim() : DEFAULT_SET_NAME;
+  const categoryRaw = form?.get("category");
+  const category = typeof categoryRaw === "string" && categoryRaw.trim() ? categoryRaw.trim() : DEFAULT_CATEGORY;
   if (!(file instanceof File) || typeof text !== "string" || !text.trim()) {
     return json({ error: "file と text の両方が必要です" }, { status: 400 });
   }
@@ -61,15 +64,15 @@ export async function POST(request: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const url = await uploadSharedRecording(buffer, setName, text, file.type || "audio/webm");
+    const url = await uploadSharedRecording(buffer, category, setName, text, file.type || "audio/webm");
     return json({ url });
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 }
 
-// DELETE ?setName=...&text=...  → remove one cue's recording from that set
-// DELETE ?setName=...           → remove the entire set
+// DELETE ?category=...&setName=...&text=...  → remove one cue's recording from that set
+// DELETE ?category=...&setName=...           → remove the entire set
 export async function DELETE(request: Request) {
   if (!requireAudioToken(request)) {
     return json({ error: "認証が必要です" }, { status: 401 });
@@ -78,15 +81,17 @@ export async function DELETE(request: Request) {
   const params = new URL(request.url).searchParams;
   const setName = params.get("setName");
   const text = params.get("text");
+  const categoryParam = params.get("category");
+  const category = categoryParam && categoryParam.trim() ? categoryParam.trim() : DEFAULT_CATEGORY;
   if (!setName) {
     return json({ error: "setName が必要です" }, { status: 400 });
   }
 
   try {
     if (text) {
-      await deleteSharedRecording(setName, text);
+      await deleteSharedRecording(category, setName, text);
     } else {
-      await deleteSharedSet(setName);
+      await deleteSharedSet(category, setName);
     }
     return json({ ok: true });
   } catch (err) {
