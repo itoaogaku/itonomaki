@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listSharedRecordings, uploadSharedRecording, deleteSharedRecording } from "@/lib/ftpAudio";
+import { listSharedRecordings, uploadSharedRecording, deleteSharedRecording, deleteSharedSet, DEFAULT_SET_NAME } from "@/lib/ftpAudio";
 
 // Called cross-origin from the stopwatch app (a separate static site, and
 // sometimes opened straight from file://, per its README) — not from a page
@@ -50,6 +50,8 @@ export async function POST(request: Request) {
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
   const text = form?.get("text");
+  const setNameRaw = form?.get("setName");
+  const setName = typeof setNameRaw === "string" && setNameRaw.trim() ? setNameRaw.trim() : DEFAULT_SET_NAME;
   if (!(file instanceof File) || typeof text !== "string" || !text.trim()) {
     return json({ error: "file と text の両方が必要です" }, { status: 400 });
   }
@@ -59,25 +61,33 @@ export async function POST(request: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const url = await uploadSharedRecording(buffer, text, file.type || "audio/webm");
+    const url = await uploadSharedRecording(buffer, setName, text, file.type || "audio/webm");
     return json({ url });
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 }
 
+// DELETE ?setName=...&text=...  → remove one cue's recording from that set
+// DELETE ?setName=...           → remove the entire set
 export async function DELETE(request: Request) {
   if (!requireAudioToken(request)) {
     return json({ error: "認証が必要です" }, { status: 401 });
   }
 
-  const text = new URL(request.url).searchParams.get("text");
-  if (!text) {
-    return json({ error: "text が必要です" }, { status: 400 });
+  const params = new URL(request.url).searchParams;
+  const setName = params.get("setName");
+  const text = params.get("text");
+  if (!setName) {
+    return json({ error: "setName が必要です" }, { status: 400 });
   }
 
   try {
-    await deleteSharedRecording(text);
+    if (text) {
+      await deleteSharedRecording(setName, text);
+    } else {
+      await deleteSharedSet(setName);
+    }
     return json({ ok: true });
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });

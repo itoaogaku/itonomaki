@@ -43,9 +43,13 @@ http://localhost:3000 を開きます。
 
 別リポジトリ `itoaogaku/stopwatch` のストレッチタイマーが、セリフの録音をチームで共有するために呼び出すAPIです。このNext.jsアプリのページとは無関係で、ストップウォッチ側のJavaScriptからこのドメインへ直接(クロスオリジンで)fetchされます。
 
-- `GET /api/stretch-audio` — 現在共有されている録音の一覧を `{ items: [{ text, url }, ...] }` で返します(認証不要、誰でも取得・再生可能)
-- `POST /api/stretch-audio` — `multipart/form-data` で `file`(音声)と `text`(セリフ)を受け取り、写真と同じFTP経由でXserverの `library-images/stretch-audio/` に保存します。ヘッダー `Authorization: Bearer <STRETCH_AUDIO_TOKEN>` が必要です。同じ `text` への再アップロードは既存ファイルを置き換えます
-- `DELETE /api/stretch-audio?text=...` — 指定したセリフの共有録音を削除します。こちらも `Authorization` ヘッダーが必要です
+録音は名前付きの「セット」(例:コーチごとの読み上げ一式)にまとめられます。元々(セット機能導入前)の実装はセットの概念がなく `library-images/stretch-audio/` 直下にセリフごとのファイルを1つずつ置くだけだったため、その挙動をそのまま「デフォルト(これまでの録音)」という名前の暗黙のセットとして扱い、`setName` を省略/未指定だとこのセットとして読み書きします(そのため既存の録音は無変換でそのまま使えます)。それ以外のセット名を指定すると `library-images/stretch-audio/<セット名>/` 以下に保存されます。
+
+- `GET /api/stretch-audio` — 現在共有されている録音の一覧を `{ items: [{ setName, text, url }, ...] }` で返します(認証不要、誰でも取得・再生可能)。セット一覧はこの `items` から重複除去して求められます
+- `POST /api/stretch-audio` — `multipart/form-data` で `file`(音声)、`text`(セリフ)、`setName`(セット名、省略時はデフォルトセット)を受け取り、写真と同じFTP経由でXserverに保存します。ヘッダー `Authorization: Bearer <STRETCH_AUDIO_TOKEN>` が必要です。同じ `setName`+`text` への再アップロードは既存ファイルを置き換えます
+- `DELETE /api/stretch-audio?setName=...&text=...` — 指定したセットの、指定したセリフの録音を削除します
+- `DELETE /api/stretch-audio?setName=...`(`text`省略) — 指定したセット全体(その中の全セリフの録音)を削除します
+- 上記2つのDELETEはどちらも `Authorization` ヘッダーが必要です
 
 必要な環境変数(`.env.example` 参照): `STRETCH_AUDIO_TOKEN`(書き込み保護用の合言葉。未設定の場合、一覧取得はできますがアップロード・削除は失敗します)、`FTP_HOST` / `FTP_USER` / `FTP_PASSWORD`(上記の写真アップロードと共通)。
 
