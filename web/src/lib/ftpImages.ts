@@ -81,17 +81,23 @@ async function downloadBuffer(client: Client, remotePath: string): Promise<Buffe
   return Buffer.concat(chunks);
 }
 
-/** Rotates an already-uploaded image 90° clockwise in place (same filename/URL),
- *  so pages referencing it don't need any markdown changes. */
-export async function rotateImage(url: string): Promise<void> {
+/** Rotates an already-uploaded image 90° clockwise and uploads it under a new
+ *  filename (returning the new URL) rather than overwriting the original —
+ *  Xserver's edge cache (and browsers) can hold onto a URL's old bytes for a
+ *  long time, so reusing the same filename left rotations invisible even
+ *  after a fresh page load. The caller is responsible for swapping the
+ *  markdown to the new URL and saving. */
+export async function rotateImage(url: string): Promise<string> {
   const prefix = `${PUBLIC_BASE_URL}/`;
   if (!url.startsWith(prefix)) {
     throw new Error("この画像はサーバー上の写真ライブラリのものではないため回転できません");
   }
-  const filename = url.slice(prefix.length);
-  if (!filename || filename.includes("/")) {
+  const oldFilename = url.slice(prefix.length);
+  if (!oldFilename || oldFilename.includes("/")) {
     throw new Error("画像ファイル名が不正です");
   }
+  const stem = oldFilename.replace(/\.[^.]+$/, "");
+  const newFilename = `${Date.now()}-${stem}.jpg`;
 
   const host = envOrThrow("FTP_HOST");
   const user = envOrThrow("FTP_USER");
@@ -100,13 +106,18 @@ export async function rotateImage(url: string): Promise<void> {
   const client = new Client(15_000);
   try {
     await client.access({ host, user, password, secure: true });
-    const original = await downloadBuffer(client, filename);
+    const original = await downloadBuffer(client, oldFilename);
     const rotated = await sharp(original).rotate(90).jpeg({ quality: JPEG_QUALITY }).toBuffer();
-    await client.uploadFrom(Readable.from(rotated), filename);
+    await client.uploadFrom(Readable.from(rotated), newFilename);
+    // Best-effort: leaving the old file behind is harmless, so a failure
+    // here shouldn't fail the rotation itself.
+    await client.remove(oldFilename).catch(() => {});
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     throw new Error(`画像の回転に失敗しました(${detail})。時間をおいて再度お試しください。`);
   } finally {
     client.close();
   }
+
+  return `${PUBLIC_BASE_URL}/${newFilename}`;
 }

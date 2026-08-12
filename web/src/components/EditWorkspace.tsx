@@ -112,8 +112,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
   const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
-  const [rotatingUrl, setRotatingUrl] = useState<string | null>(null);
-  const [imgVersion, setImgVersion] = useState<Record<string, number>>({});
+  const [rotatingIdx, setRotatingIdx] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const imageLines = useMemo(() => parseImageLines(contentText), [contentText]);
@@ -141,24 +140,30 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
     setDraggedIdx(null);
   }
 
-  // Rotates the file in place on the server (same filename/URL), so this
-  // takes effect immediately — no need to press 保存 for the rotation itself.
-  async function handleRotateImage(url: string) {
-    setRotatingUrl(url);
+  // Rotation uploads the result under a new filename rather than overwriting
+  // the original (Xserver's edge cache can hold the old bytes for a URL
+  // indefinitely), so it swaps the markdown to the new URL like any other
+  // edit — 保存して公開 is still required for it to reach the site.
+  async function handleRotateImage(index: number) {
+    const target = imageLines[index];
+    if (!target) return;
+    setRotatingIdx(index);
     setMessage(null);
     try {
       const res = await fetch("/api/edit/rotate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: target.url }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "画像の回転に失敗しました");
-      setImgVersion((prev) => ({ ...prev, [url]: Date.now() }));
+      const lines = contentText.split("\n");
+      lines[target.lineIndex] = `![${target.alt}](${data.url})`;
+      setContentText(lines.join("\n"));
     } catch (err) {
       setMessage({ type: "error", text: err instanceof Error ? err.message : "画像の回転に失敗しました" });
     } finally {
-      setRotatingUrl(null);
+      setRotatingIdx(null);
     }
   }
 
@@ -383,7 +388,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
         {imageLines.length > 0 && (
           <div className="mt-3 rounded-md border border-[var(--border)] p-3">
             <p className="text-xs text-[var(--muted)]">
-              ドラッグして写真の順番を入れ替えられます。回転ボタンは押すとすぐにサーバー上の画像に反映されます(並び替えは「保存して公開」を押すまで反映されません)。
+              ドラッグして写真の順番を入れ替えられます。回転ボタンで90度ずつ回転できます(並び替え・回転どちらも「保存して公開」を押すまでサイトには反映されません)。
             </p>
             <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
               {imageLines.map((im, i) => (
@@ -398,21 +403,17 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- remote-hosted library photo, no need for next/image optimization */}
-                  <img
-                    src={`${im.url}${imgVersion[im.url] ? `?v=${imgVersion[im.url]}` : ""}`}
-                    alt=""
-                    className="aspect-square w-full object-cover"
-                  />
+                  <img src={im.url} alt="" className="aspect-square w-full object-cover" />
                   <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/55 px-1.5 py-0.5">
                     <span className="text-[10px] text-white">{i + 1}</span>
                     <button
                       type="button"
-                      onClick={() => handleRotateImage(im.url)}
-                      disabled={rotatingUrl === im.url}
+                      onClick={() => handleRotateImage(i)}
+                      disabled={rotatingIdx === i}
                       aria-label="90度回転"
                       className="text-xs text-white disabled:opacity-50"
                     >
-                      {rotatingUrl === im.url ? "..." : "↻"}
+                      {rotatingIdx === i ? "..." : "↻"}
                     </button>
                   </div>
                 </div>

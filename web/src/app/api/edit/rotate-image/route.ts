@@ -14,8 +14,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    await rotateImage(url);
-    return NextResponse.json({ ok: true });
+    const rotatedUrl = await rotateImage(url);
+    return NextResponse.json({ url: rotatedUrl });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
