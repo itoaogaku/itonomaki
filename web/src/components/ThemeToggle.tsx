@@ -34,8 +34,14 @@ export function ThemeToggle() {
         />
       </svg>
       {/* crescent moon: shown while light, as the "switch to dark" target icon */}
-      <svg viewBox="0 0 24 24" className="theme-icon-light-visible h-4 w-4" fill="currentColor">
-        <path d="M20.742 13.045a8.088 8.088 0 0 1-2.077.273c-4.492 0-8.13-3.639-8.13-8.13 0-1.276.297-2.517.856-3.629a.5.5 0 0 0-.62-.68A10.098 10.098 0 0 0 3.5 11.9C3.5 17.47 8.03 22 13.6 22a10.098 10.098 0 0 0 8.021-3.925.5.5 0 0 0-.879-.53c-.007.01-.014.02-.02.03Z" />
+      <svg
+        viewBox="0 0 24 24"
+        className="theme-icon-light-visible h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
       </svg>
     </button>
   );
