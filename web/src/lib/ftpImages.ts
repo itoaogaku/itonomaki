@@ -86,7 +86,14 @@ async function downloadBuffer(client: Client, remotePath: string): Promise<Buffe
  *  Xserver's edge cache (and browsers) can hold onto a URL's old bytes for a
  *  long time, so reusing the same filename left rotations invisible even
  *  after a fresh page load. The caller is responsible for swapping the
- *  markdown to the new URL and saving. */
+ *  markdown to the new URL and saving.
+ *
+ *  Deliberately does NOT delete the original file: this function only
+ *  guarantees a new file exists, not that the caller's save actually lands
+ *  (network error, unsaved draft, etc.), and deleting on that assumption
+ *  once already left a saved page pointing at a file that no longer
+ *  existed. An unreferenced old file is just a few KB of clutter — a
+ *  broken image is much worse. */
 export async function rotateImage(url: string): Promise<string> {
   const prefix = `${PUBLIC_BASE_URL}/`;
   if (!url.startsWith(prefix)) {
@@ -109,9 +116,6 @@ export async function rotateImage(url: string): Promise<string> {
     const original = await downloadBuffer(client, oldFilename);
     const rotated = await sharp(original).rotate(90).jpeg({ quality: JPEG_QUALITY }).toBuffer();
     await client.uploadFrom(Readable.from(rotated), newFilename);
-    // Best-effort: leaving the old file behind is harmless, so a failure
-    // here shouldn't fail the rotation itself.
-    await client.remove(oldFilename).catch(() => {});
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     throw new Error(`画像の回転に失敗しました(${detail})。時間をおいて再度お試しください。`);

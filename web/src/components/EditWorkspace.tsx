@@ -141,6 +141,18 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
     setDraggedIdx(null);
   }
 
+  // For removing broken (e.g. 404ing) entries, or ones just not wanted
+  // anymore. Like reordering, this only edits the draft — 保存して公開 is
+  // still required to publish the removal.
+  function handleRemoveImage(index: number) {
+    const target = imageLines[index];
+    if (!target) return;
+    if (!window.confirm("この写真を本文から削除しますか?(サーバー上の画像ファイル自体は削除されません)")) return;
+    const lines = contentText.split("\n");
+    lines.splice(target.lineIndex, 1);
+    setContentText(lines.join("\n"));
+  }
+
   // Rotation uploads the result under a new filename rather than overwriting
   // the original (Xserver's edge cache can hold the old bytes for a URL
   // indefinitely), so it swaps the markdown to the new URL like any other
@@ -412,7 +424,7 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
         {imageLines.length > 0 && (
           <div className="mt-3 rounded-md border border-[var(--border)] p-3">
             <p className="text-xs text-[var(--muted)]">
-              ドラッグして写真の順番を入れ替えられます(反映には「保存して公開」を押してください)。回転ボタンは90度ずつ回転し、既存トピックの編集中はボタンを押すとすぐに保存・公開されます。
+              ドラッグして写真の順番を入れ替え、右上の×で削除できます(どちらも反映には「保存して公開」を押してください)。回転ボタンは90度ずつ回転し、既存トピックの編集中はボタンを押すとすぐに保存・公開されます。
             </p>
             <div className="mt-2 grid max-h-96 grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4 md:grid-cols-6">
               {imageLines.map((im, i) => (
@@ -433,6 +445,14 @@ function Editor({ sections, onLogout }: { sections: Section[]; onLogout: () => v
                       ✓
                     </div>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(i)}
+                    aria-label="この写真を削除"
+                    className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/55 text-xs text-white"
+                  >
+                    ×
+                  </button>
                   <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/55 px-1.5 py-0.5">
                     <span className="text-[10px] text-white">{i + 1}</span>
                     <button
