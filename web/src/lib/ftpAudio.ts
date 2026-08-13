@@ -153,16 +153,38 @@ export async function listSharedRecordings(): Promise<SharedRecording[]> {
   });
 }
 
+// Xserver's default Apache mime.types has no mapping for .m4a/.webm/.ogg —
+// confirmed by direct testing: the exact same bytes play fine from a local
+// Blob (which sets its own Content-Type client-side) but fail with Safari's
+// "NotSupportedError" when loaded from the served URL, which happens
+// regardless of directory/permissions. An .htaccess with explicit AddType
+// directives in the top-level audio directory fixes this for every
+// subdirectory beneath it too (Apache merges .htaccess up the directory
+// chain). Re-uploaded on every call rather than checked-then-uploaded —
+// it's a few dozen bytes, and this keeps the logic simple and self-healing
+// if the file is ever lost.
+const HTACCESS_CONTENT = 'AddType audio/mp4 .m4a\nAddType audio/webm .webm\nAddType audio/ogg .ogg\nAddType audio/wav .wav\n';
+
+async function ensureAudioMimeTypes(client: Client): Promise<void> {
+  const cwd = await client.pwd();
+  await client.cd('/').catch(() => {});
+  await client.ensureDir(AUDIO_DIR);
+  await client.uploadFrom(Readable.from(Buffer.from(HTACCESS_CONTENT, 'utf-8')), '.htaccess').catch(() => {});
+  await client.cd(cwd).catch(() => {});
+}
+
 /** Uploads a recording for the given (category, set, cue text) triple,
  *  replacing any existing recording(s) for that same exact triple (even ones
  *  saved under a different audio format previously). Returns the new public
- *  URL. */
+ *  URL. Throws if the upload doesn't actually verify on the server
+ *  afterward, instead of reporting a false success. */
 export async function uploadSharedRecording(buffer: Buffer, category: string, setName: string, text: string, mimeType: string): Promise<string> {
   const stem = encodeStem(text);
   const filename = `${stem}.${extensionForMimeType(mimeType)}`;
   const dirPath = dirPathFor(category, setName);
 
   return withClient(async (client) => {
+    await ensureAudioMimeTypes(client);
     await client.ensureDir(dirPath); // creates every needed level and cds into it
     // Directories freshly created over FTP can end up with permissions the
     // web server's own user can't read (a common shared-hosting gotcha: the
@@ -180,6 +202,13 @@ export async function uploadSharedRecording(buffer: Buffer, category: string, se
     }
     await client.uploadFrom(Readable.from(buffer), filename);
     await client.sendIgnoringError(`SITE CHMOD 644 ${filename}`);
+    // Confirm the file actually landed with the right size before reporting
+    // success — a silent write failure previously left "チーム共有済み"
+    // (and a URL) pointing at a file that 404s.
+    const remoteSize = await client.size(filename);
+    if (remoteSize !== buffer.length) {
+      throw new Error(`アップロード後の確認に失敗しました(サーバー上のサイズ ${remoteSize} バイト、期待値 ${buffer.length} バイト)`);
+    }
     return publicUrlFor(category, setName, filename);
   });
 }
