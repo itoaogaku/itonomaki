@@ -164,6 +164,14 @@ export async function uploadSharedRecording(buffer: Buffer, category: string, se
 
   return withClient(async (client) => {
     await client.ensureDir(dirPath); // creates every needed level and cds into it
+    // Directories freshly created over FTP can end up with permissions the
+    // web server's own user can't read (a common shared-hosting gotcha: the
+    // FTP daemon's default umask is more restrictive than what Apache/nginx
+    // needs) — the file uploads fine, HTTP just 403s on it from any device
+    // that doesn't already have it cached/local. Force both to be
+    // world-readable explicitly; sendIgnoringError so this is a no-op (not
+    // a failure) on hosts where SITE CHMOD isn't supported.
+    await client.sendIgnoringError('SITE CHMOD 755 .');
     const existing = await client.list().catch(() => [] as FileInfo[]);
     for (const entry of existing) {
       if (entry.isFile && stemOf(entry.name) === stem && entry.name !== filename) {
@@ -171,6 +179,7 @@ export async function uploadSharedRecording(buffer: Buffer, category: string, se
       }
     }
     await client.uploadFrom(Readable.from(buffer), filename);
+    await client.sendIgnoringError(`SITE CHMOD 644 ${filename}`);
     return publicUrlFor(category, setName, filename);
   });
 }

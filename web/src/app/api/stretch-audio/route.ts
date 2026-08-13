@@ -37,7 +37,9 @@ export async function OPTIONS() {
 export async function GET() {
   try {
     const items = await listSharedRecordings();
-    return json({ items });
+    // Must always reflect the latest upload — a stale cached list on one
+    // device is indistinguishable from "the recording never arrived".
+    return json({ items }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
