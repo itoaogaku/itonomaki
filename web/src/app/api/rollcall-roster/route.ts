@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { readRoster, writeRoster } from "@/lib/ftpRoster";
 
 // Called cross-origin from the stopwatch app's 点呼(ロールコール)タブ, same
-// as /api/stretch-audio. No session/cookie to share across origins, so
-// writes are gated by a bearer token instead (the same STRETCH_AUDIO_TOKEN
-// already used for voice-recording uploads — the stopwatch app's own README
-// asks users to reuse that password for roster edits too). CORS is left
-// wide open: GET is public read-only, POST is protected by the token check.
+// pattern as /api/stretch-audio but gated by its own separate password —
+// ROLLCALL_ROSTER_TOKEN, distinct from STRETCH_AUDIO_TOKEN, so the two
+// teams' passwords can differ (they were briefly the same token, then split
+// apart on request). CORS is left wide open: GET is public read-only, POST
+// is protected by the token check.
 const MAX_UPLOAD_BYTES = 512 * 1024; // 名簿のJSONはこれで十分すぎるほど大きい
 
 function corsHeaders(): HeadersInit {
@@ -21,8 +21,8 @@ function json(body: unknown, init?: ResponseInit) {
   return NextResponse.json(body, { ...init, headers: { ...corsHeaders(), ...init?.headers } });
 }
 
-function requireAudioToken(request: Request): boolean {
-  const expected = process.env.STRETCH_AUDIO_TOKEN?.trim();
+function requireRosterToken(request: Request): boolean {
+  const expected = process.env.ROLLCALL_ROSTER_TOKEN?.trim();
   if (!expected) return false; // unconfigured = writes disabled, not "anyone can write"
   const header = request.headers.get("authorization") ?? "";
   const provided = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
@@ -43,7 +43,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!requireAudioToken(request)) {
+  if (!requireRosterToken(request)) {
     return json({ error: "認証が必要です" }, { status: 401 });
   }
 
